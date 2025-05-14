@@ -1,0 +1,18 @@
+package com.example.crmedumobile.di
+
+import com.example.crmedumobile.domain.repository.auth.AuthRepository
+import com.example.crmedumobile.presentation.usecase.LoginUseCase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+
+@Module
+@InstallIn(SingletonComponent::class)
+object UseCaseModule {
+
+    @Provides
+    fun provideLoginUseCase(
+        authRepository: AuthRepository
+    ): LoginUseCase = LoginUseCase(authRepository)
+}

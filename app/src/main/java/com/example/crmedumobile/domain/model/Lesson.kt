@@ -1,7 +1,7 @@
 package com.example.crmedumobile.domain.model
 
-import com.example.crmedumobile.domain.model.enum.AttendanceStatus
-import com.example.crmedumobile.domain.model.enum.LessonStatus
+import com.example.crmedumobile.domain.model.enums.AttendanceStatus
+import com.example.crmedumobile.domain.model.enums.LessonStatus
 
 data class Lesson(
     val id: Long,

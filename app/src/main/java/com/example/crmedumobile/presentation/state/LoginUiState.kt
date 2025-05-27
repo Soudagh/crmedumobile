@@ -1,4 +1,4 @@
-package com.example.crmedumobile.presentation.states
+package com.example.crmedumobile.presentation.state
 
 import com.example.crmedumobile.domain.model.Jwt
 

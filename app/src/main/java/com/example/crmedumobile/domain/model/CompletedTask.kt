@@ -1,6 +1,6 @@
 package com.example.crmedumobile.domain.model
 
-import com.example.crmedumobile.domain.model.enum.TaskStatus
+import com.example.crmedumobile.domain.model.enums.TaskStatus
 import java.time.LocalDateTime
 
 data class CompletedTask(

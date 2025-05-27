@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.crmedumobile.presentation.screen.LoginScreen
+import com.example.crmedumobile.presentation.screen.ScheduleScreen
 
 @Composable
 fun RootNavGraph(
@@ -13,7 +14,7 @@ fun RootNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "login"
+        startDestination = "schedule"
     ) {
         composable("login") {
             LoginScreen(
@@ -27,6 +28,10 @@ fun RootNavGraph(
 
         composable("home") {
 //            HomeScreen()
+        }
+
+        composable("schedule") {
+            ScheduleScreen(controller = navController)
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.crmedumobile.domain.model
 
-import com.example.crmedumobile.domain.model.enums.UserRole
+import com.example.crmedumobile.domain.model.enum.UserRole
 
 data class User(
     val id: Long,
@@ -10,7 +10,6 @@ data class User(
     val mail: String,
     val phone: String,
     val timezone: String,
-    val role: UserRole,
-    val organization: Organization,
-    val notificationsEnabled: Boolean
+    val role: UserRole
+//    val notificationsEnabled: Boolean
 )

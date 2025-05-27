@@ -1,4 +1,3 @@
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -29,7 +28,6 @@ import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -45,6 +43,7 @@ import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat24
 
 @Composable
 fun PrimaryTextField(
+    onTextChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     title: String? = null,
     value: String = "",
@@ -59,10 +58,9 @@ fun PrimaryTextField(
     singleLine: Boolean = false,
     isError: Boolean = false,
     isOnlyNumbers: Boolean = false,
-    onTextChange: (String) -> Unit,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    @DrawableRes trailingIcon: Int? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
+    trailingIcon: ImageVector? = null,
     trailingIconModifier: Modifier = Modifier,
     onTrailingIconClicked: () -> Unit = {},
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
@@ -131,7 +129,7 @@ fun PrimaryTextField(
                             onClick = onTrailingIconClicked
                         ) {
                             Icon(
-                                imageVector = ImageVector.vectorResource(id = trailingIcon),
+                                imageVector = trailingIcon,
                                 contentDescription = null,
                                 tint = DarkPurple,
                             )

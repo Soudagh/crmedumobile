@@ -5,4 +5,6 @@
     <string name="max_count_char">Максимальное количество символов</string>
     <string name="log_in">Логин</string>
     <string name="password">Пароль</string>
+    <string name="login_field_blank_error">Поле логина не может быть пустым</string>
+    <string name="password_field_blank_error">Поле пароля не может быть пустым</string>
 </resources>

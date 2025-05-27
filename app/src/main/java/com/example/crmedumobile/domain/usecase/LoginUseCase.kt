@@ -1,4 +1,4 @@
-package com.example.crmedumobile.presentation.usecase
+package com.example.crmedumobile.domain.usecase
 
 import com.example.crmedumobile.domain.model.Auth
 import com.example.crmedumobile.domain.model.Jwt

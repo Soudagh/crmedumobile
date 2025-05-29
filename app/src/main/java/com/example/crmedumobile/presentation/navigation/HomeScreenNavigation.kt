@@ -26,7 +26,7 @@ fun HomeScreenNavigation(modifier: Modifier = Modifier, controller: NavHostContr
             NotificationsScreen()
         }
         composable("schedule") {
-            ScheduleScreen()
+            ScheduleScreen(controller)
         }
         composable("profile") {
             ProfileScreen()

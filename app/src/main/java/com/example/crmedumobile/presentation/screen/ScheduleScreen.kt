@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.crmedumobile.R
 import com.example.crmedumobile.domain.model.ScheduleModel
 import com.example.crmedumobile.presentation.components.ScheduleItem
@@ -35,14 +36,16 @@ import com.example.crmedumobile.presentation.states.ScheduleUiState
 import com.example.crmedumobile.presentation.theme.BoldMontserrat36
 import com.example.crmedumobile.presentation.theme.Purple40
 import com.example.crmedumobile.presentation.viewmodel.ScheduleViewModel
+import java.time.LocalDate
 
 @Composable
 fun ScheduleScreen(
+    controller: NavHostController,
     viewModel: ScheduleViewModel = hiltViewModel()
 ) {
     val scheduleState by viewModel.scheduleState.collectAsState()
     var list by remember { mutableStateOf(listOf<ScheduleModel>()) }
-    var today by remember { mutableStateOf<Pair<String, String>>(Pair("", "")) }
+    var today by remember { mutableStateOf(Pair("", "")) }
 
     LaunchedEffect(Unit) {
         viewModel.loadSchedule()
@@ -51,22 +54,24 @@ fun ScheduleScreen(
     LaunchedEffect(scheduleState) {
         when (val state = scheduleState) {
             is ScheduleUiState.Success -> {
-                list = state.schedule // ✅ берём список из state
-                // Можно здесь установить today = ...
+                list = state.schedule
+                val now = LocalDate.now()
+                val todayLessons = list.filter { LocalDate.parse(it.date) == now }
+                today = Pair(
+                    now.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase),
+                    now.toString()
+                )
             }
 
             is ScheduleUiState.Error -> {
-                // Показать ошибку
                 println("Ошибка: ${state.message}")
             }
 
             else -> {}
         }
     }
+
     ScheduleScreenContent(list = list, today = today)
-//    BackHandler {
-//        controller.popBackStack()
-//    }
 }
 
 @Composable
@@ -120,8 +125,30 @@ fun ScheduleScreenContent(
     }
 }
 
-@Preview(showBackground = false)
+@Preview(showBackground = true)
 @Composable
 fun ScheduleScreenPreview() {
-    ScheduleScreen()
+    val dummyLessons = listOf(
+        ScheduleModel(
+            time = "10:00 – 11:30",
+            science = "Math",
+            group = "Group A",
+            theme = "Algebra Basics",
+            teacher = "Mr. Smith",
+            link = "https://zoom.us/lesson/123"
+        ),
+        ScheduleModel(
+            time = "12:00 – 13:30",
+            science = "History",
+            group = "Group B",
+            theme = "WWII Overview",
+            teacher = "Ms. Johnson",
+            link = "https://zoom.us/lesson/456"
+        )
+    )
+
+    ScheduleScreenContent(
+        list = dummyLessons,
+        today = Pair("Monday", "2025-05-26")
+    )
 }

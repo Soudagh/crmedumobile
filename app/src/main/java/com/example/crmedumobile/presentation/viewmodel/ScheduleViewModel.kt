@@ -32,7 +32,8 @@ class ScheduleViewModel @Inject constructor(
                         group = lesson.program.name,
                         theme = lesson.notes,
                         teacher = "${lesson.tutor.user.surname} ${lesson.tutor.user.name}",
-                        link = lesson.link
+                        link = lesson.link,
+                        date = lesson.date.toString()
                     )
                 }
 

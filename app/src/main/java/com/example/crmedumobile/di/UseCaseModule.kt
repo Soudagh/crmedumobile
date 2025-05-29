@@ -1,10 +1,14 @@
 package com.example.crmedumobile.di
 
 import com.example.crmedumobile.domain.repository.auth.AuthRepository
+import com.example.crmedumobile.domain.repository.notification.NotificationRepository
+import com.example.crmedumobile.domain.repository.schedule.ScheduleRepository
 import com.example.crmedumobile.domain.repository.user.UserRepository
 import com.example.crmedumobile.domain.usecase.ChangeNotifyModeUseCase
-import com.example.crmedumobile.domain.usecase.LoginUseCase
+import com.example.crmedumobile.domain.usecase.GetNotificationsUseCase
 import com.example.crmedumobile.domain.usecase.GetProfileUseCase
+import com.example.crmedumobile.domain.usecase.GetScheduleUseCase
+import com.example.crmedumobile.domain.usecase.LoginUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,4 +32,12 @@ object UseCaseModule {
     fun changeNotifyModeUseCase(
         userRepository: UserRepository
     ): ChangeNotifyModeUseCase = ChangeNotifyModeUseCase(userRepository)
+
+    @Provides
+    fun getScheduleUseCase(scheduleRepository: ScheduleRepository): GetScheduleUseCase =
+        GetScheduleUseCase(scheduleRepository)
+
+    @Provides
+    fun getNotificationsUseCase(notificationRepository: NotificationRepository): GetNotificationsUseCase =
+        GetNotificationsUseCase(notificationRepository)
 }

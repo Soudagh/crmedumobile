@@ -25,7 +25,7 @@ class ScheduleViewModel @Inject constructor(
                 val schedule = scheduleUseCase()
                 _scheduleState.value = ScheduleUiState.Success(schedule)
             } catch (e: Exception) {
-                _scheduleState.value = ScheduleUiState.Error(e.message ?: "Ошибка загрузки профиля")
+                _scheduleState.value = ScheduleUiState.Error(e.message ?: "Ошибка загрузки расписания")
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.crmedumobile.domain.model
 
-import com.example.crmedumobile.domain.model.enum.UserRole
+import com.example.crmedumobile.domain.model.enums.UserRole
+
 
 data class User(
     val id: Long,

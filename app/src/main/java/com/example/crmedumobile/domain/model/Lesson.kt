@@ -1,6 +1,6 @@
 package com.example.crmedumobile.domain.model
 
-import com.example.crmedumobile.domain.model.enum.LessonStatus
+import com.example.crmedumobile.domain.model.enums.LessonStatus
 import java.time.LocalDate
 import java.time.ZonedDateTime
 

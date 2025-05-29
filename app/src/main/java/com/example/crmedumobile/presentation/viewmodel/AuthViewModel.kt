@@ -3,9 +3,8 @@ package com.example.crmedumobile.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crmedumobile.domain.model.Auth
-import com.example.crmedumobile.domain.model.error.AuthException
 import com.example.crmedumobile.domain.usecase.LoginUseCase
-import com.example.crmedumobile.presentation.states.LoginUiState
+import com.example.crmedumobile.presentation.state.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase,
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
     private val _loginState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
@@ -23,11 +22,11 @@ class AuthViewModel @Inject constructor(
     fun login(email: String, password: String) {
         viewModelScope.launch {
             _loginState.value = LoginUiState.Loading
+
             try {
                 val jwt = loginUseCase(Auth(email, password))
                 _loginState.value = LoginUiState.Success(jwt)
-            } catch (e: AuthException) {
-                println(e)
+            } catch (e: Exception) {
                 _loginState.value = LoginUiState.Error(e.message ?: "Unknown error")
             }
         }

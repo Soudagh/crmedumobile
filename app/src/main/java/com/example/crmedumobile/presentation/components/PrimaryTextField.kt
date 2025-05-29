@@ -43,7 +43,6 @@ import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat24
 
 @Composable
 fun PrimaryTextField(
-    onTextChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     title: String? = null,
     value: String = "",
@@ -58,9 +57,10 @@ fun PrimaryTextField(
     singleLine: Boolean = false,
     isError: Boolean = false,
     isOnlyNumbers: Boolean = false,
+    onTextChange: (String) -> Unit,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardType: KeyboardType = KeyboardType.Text,
     trailingIcon: ImageVector? = null,
+    keyboardType: KeyboardType = KeyboardType.Text,
     trailingIconModifier: Modifier = Modifier,
     onTrailingIconClicked: () -> Unit = {},
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }

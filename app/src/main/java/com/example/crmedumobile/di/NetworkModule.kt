@@ -3,6 +3,8 @@ package com.example.crmedumobile.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.crmedumobile.data.network.service.AuthService
+import com.example.crmedumobile.data.network.service.NotificationService
+import com.example.crmedumobile.data.network.service.ScheduleService
 import com.example.crmedumobile.data.network.service.UserService
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -63,4 +65,12 @@ object NetworkModule {
     @Provides
     fun provideUserService(retrofit: Retrofit): UserService =
         retrofit.create(UserService::class.java)
+
+    @Provides
+    fun provideScheduleService(retrofit: Retrofit): ScheduleService =
+        retrofit.create(ScheduleService::class.java)
+
+    @Provides
+    fun provideNotificationService(retrofit: Retrofit): NotificationService =
+        retrofit.create(NotificationService::class.java)
 }

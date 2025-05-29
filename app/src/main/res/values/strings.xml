@@ -7,4 +7,20 @@
     <string name="password">Пароль</string>
     <string name="login_field_blank_error">Поле логина не может быть пустым</string>
     <string name="password_field_blank_error">Поле пароля не может быть пустым</string>
+    <string name="schedule">Расписание</string>
+    <string name="theme">Тема: %s</string>
+    <string name="link">Перейти по ссылке</string>
+    <string name="homeWork">Домашние задание</string>
+    <string name="homeWork2">Задание</string>
+    <string name="notifications">Уведомления</string>
+    <string name="profile">Профиль</string>
+    <string name="hw">ДЗ</string>
+    <string name="controls">Контрольные точки</string>
+    <string name="theory">Теория</string>
+    <string name="readyVariants">Готовые варианты</string>
+    <string name="elements">Предметы</string>
+    <string name="validate">Дедлайн: %s</string>
+    <string name="status">Статус: </string>
+    <string name="passed">Сдано</string>
+    <string name="failed">Не сдано</string>
 </resources>

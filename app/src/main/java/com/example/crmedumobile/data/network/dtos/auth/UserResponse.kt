@@ -1,7 +1,7 @@
 package com.example.crmedumobile.data.network.dtos.auth
 
-import com.example.crmedumobile.domain.model.enum.UserRole
-import com.example.crmedumobile.domain.model.enum.UserStatus
+import com.example.crmedumobile.domain.model.enums.UserRole
+import com.example.crmedumobile.domain.model.enums.UserStatus
 
 data class UserResponse(
     val id: Long,

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crmedumobile.domain.usecase.ChangeNotifyModeUseCase
 import com.example.crmedumobile.domain.usecase.GetProfileUseCase
-import com.example.crmedumobile.presentation.states.UserUiState
+import com.example.crmedumobile.presentation.state.UserUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

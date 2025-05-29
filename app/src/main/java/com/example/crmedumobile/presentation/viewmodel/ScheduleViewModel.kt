@@ -16,47 +16,29 @@ import javax.inject.Inject
 class ScheduleViewModel @Inject constructor(): ViewModel() {
     private val _state = MutableStateFlow<ScheduleState>(ScheduleState.Init)
     val state = _state.asStateFlow()
+    init{
+        getSchedule()
+    }
 
     fun getSchedule(){
+        val list = mutableListOf<ScheduleModel>()
         viewModelScope.launch(Dispatchers.IO) {
             //for loading screen
             _state.value = ScheduleState.Loading
             delay(2000)
+            for (i in 1 until 20){
+                list.add(ScheduleModel(
+                    "13:00",
+                    "Информатика",
+                    "Групповое",
+                    "ПОУ Программирование $i",
+                    "Иванов Иван Иванович",
+                    "https://www.youtube.com/watch?v=BmbM5B4NjxY"
+                ))
+            }
             _state.value = ScheduleState.Success(
-                listOf(
-                    ScheduleModel(
-                        "13:00",
-                        "Информатика",
-                        "Групповое",
-                        "ПОУ Программирование",
-                        "Иванов Иван Иванович",
-                        "https://www.youtube.com/watch?v=BmbM5B4NjxY"
-                    ),
-                    ScheduleModel(
-                        "13:00",
-                        "Информатика",
-                        "Групповое",
-                        "ПОУ Программирование",
-                        "Иванов Иван Иванович",
-                        "https://www.youtube.com/watch?v=BmbM5B4NjxY"
-                    ),
-                    ScheduleModel(
-                        "13:00",
-                        "Информатика",
-                        "Групповое",
-                        "ПОУ Программирование",
-                        "Иванов Иван Иванович",
-                        "https://www.youtube.com/watch?v=BmbM5B4NjxY"
-                    ),
-                    ScheduleModel(
-                        "13:00",
-                        "Информатика",
-                        "Групповое",
-                        "ПОУ Программирование",
-                        "Иванов Иван Иванович",
-                        "https://www.youtube.com/watch?v=BmbM5B4NjxY"
-                    )
-                )
+                list,
+                Pair("Среда","06.05.2025")
             )
         }
     }

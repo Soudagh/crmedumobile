@@ -52,7 +52,10 @@ fun LoginScreen(
 
     LoginScreenContent(
         loginState = loginState,
-        onLogin = { email, password -> viewModel.login(email, password) },
+        onLogin = { email, password ->
+            //viewModel.login(email, password)
+            onLoginSuccess()
+        },
     )
 }
 

@@ -3,6 +3,7 @@ package com.example.crmedumobile.presentation.components
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.Black
@@ -40,7 +42,7 @@ fun ScheduleItem(modifier: Modifier = Modifier, item: ScheduleModel) {
         Column(modifier.fillMaxWidth().padding(10.dp)) {
             Row(modifier.clip(
                 RoundedCornerShape(15.dp)
-            )){
+            ).padding(0.5.dp)){
                 Text(item.time, color = Black, fontFamily = CrmEduMontserrat, fontWeight = FontWeight.Thin, modifier = modifier.background(colorResource(R.color.light_green_very_light)), fontSize = 10.sp)
                 Text(item.science, color = Black, fontSize = 16.sp, fontFamily = CrmEduMontserrat, fontWeight = FontWeight.Thin, modifier = modifier.background(colorResource(R.color.light_green_very_light)))
             }
@@ -50,10 +52,12 @@ fun ScheduleItem(modifier: Modifier = Modifier, item: ScheduleModel) {
             }
             Text(String.format(context.getString(R.string.theme), item.theme), fontFamily = CrmEduMontserrat, fontWeight = FontWeight.Thin)
             Text(item.teacher, fontFamily = CrmEduMontserrat, fontWeight = FontWeight.Thin)
-            Text(stringResource(R.string.link), modifier.clickable{
-                val intent = Intent(Intent.ACTION_VIEW, item.link.toUri())
-                context.startActivity(intent)
-            }.fillMaxWidth(), textAlign = TextAlign.End, color = colorResource(R.color.linkColor))
+            Box(modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd){
+                Text(stringResource(R.string.link), modifier.clickable{
+                    val intent = Intent(Intent.ACTION_VIEW, item.link.toUri())
+                    context.startActivity(intent)
+                }, color = colorResource(R.color.linkColor))
+            }
         }
     }
 }

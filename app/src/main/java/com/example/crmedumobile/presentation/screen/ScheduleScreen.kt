@@ -43,7 +43,7 @@ import com.example.crmedumobile.presentation.viewmodel.ScheduleViewModel
 fun ScheduleScreen(controller: NavHostController) {
     val viewModel = hiltViewModel<ScheduleViewModel>()
     var list by remember { mutableStateOf(listOf<ScheduleModel>()) }
-    viewModel.getSchedule()
+    var today by remember { mutableStateOf<Pair<String,String>>(Pair("","")) }
     LaunchedEffect(viewModel.state) {
         viewModel.state.collect {
             when(it){
@@ -52,14 +52,13 @@ fun ScheduleScreen(controller: NavHostController) {
                 }
                 is ScheduleState.Success -> {
                     list = it.schedule
+                    today = it.today
                 }
                 else -> {}
             }
         }
     }
-    Scaffold {
-        ScheduleScreenContent(paddingValues = it, list = list)
-    }
+    ScheduleScreenContent(list = list, today = today)
     BackHandler {
         controller.popBackStack()
     }
@@ -68,13 +67,12 @@ fun ScheduleScreen(controller: NavHostController) {
 @Composable
 fun ScheduleScreenContent(
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues,
-    list: List<ScheduleModel>
+    list: List<ScheduleModel>,
+    today: Pair<String, String>
 ) {
     Column(modifier = modifier
-        .fillMaxSize()
-        .padding(paddingValues)) {
-        Text(stringResource(R.string.schedule), fontSize = 25.sp, color = Black, style = BoldMontserrat36, modifier = modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        .fillMaxSize()) {
+        Text(stringResource(R.string.schedule), fontSize = 28.sp, color = Black, style = BoldMontserrat36, modifier = modifier.fillMaxWidth(), textAlign = TextAlign.Center)
         HorizontalDivider()
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = {
@@ -85,9 +83,9 @@ fun ScheduleScreenContent(
 
             Column(modifier = modifier
                 .weight(11f)
-                .fillMaxWidth()) {
-                Text("Среда", color = Purple40)
-                Text("06.05.2025", color = Purple40)
+                .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(today.first, color = Purple40)
+                Text(today.second, color = Purple40)
             }
 
             IconButton(onClick = {

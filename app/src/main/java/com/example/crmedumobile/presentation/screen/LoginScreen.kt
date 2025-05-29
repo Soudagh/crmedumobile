@@ -33,7 +33,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.crmedumobile.R
-import com.example.crmedumobile.presentation.states.LoginUiState
+import com.example.crmedumobile.presentation.state.LoginUiState
 import com.example.crmedumobile.presentation.theme.BoldMontserrat36
 import com.example.crmedumobile.presentation.viewmodel.AuthViewModel
 import kotlinx.coroutines.launch

@@ -1,10 +1,26 @@
 package com.example.crmedumobile.presentation.screen
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.crmedumobile.presentation.viewmodel.UserViewModel
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, controller: NavHostController) {
+fun ProfileScreen(
+    viewModel: UserViewModel = hiltViewModel(),
+) {
+    val userState by viewModel.userState.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.profile()
+    }
 
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileScreenPreview() {
+    ProfileScreen()
 }

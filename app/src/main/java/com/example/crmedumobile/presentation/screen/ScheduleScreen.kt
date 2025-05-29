@@ -19,7 +19,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,7 +42,10 @@ import com.example.crmedumobile.presentation.theme.Purple40
 import com.example.crmedumobile.presentation.viewmodel.ScheduleViewModel
 
 @Composable
-fun ScheduleScreen(controller: NavHostController) {
+fun ScheduleScreen(
+    controller: NavHostController,
+    viewModel: ScheduleViewModel = hiltViewModel()
+) {
     val viewModel = hiltViewModel<ScheduleViewModel>()
     var list by remember { mutableStateOf(listOf<ScheduleModel>()) }
     var today by remember { mutableStateOf<Pair<String,String>>(Pair("","")) }
@@ -102,4 +107,9 @@ fun ScheduleScreenContent(
 
         }
     }
+}
+@Preview(showBackground = false)
+@Composable
+fun ScheduleScreenPreview() {
+    ScheduleScreen()
 }

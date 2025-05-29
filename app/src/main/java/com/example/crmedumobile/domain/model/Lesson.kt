@@ -1,13 +1,19 @@
 package com.example.crmedumobile.domain.model
 
-import com.example.crmedumobile.domain.model.enums.AttendanceStatus
-import com.example.crmedumobile.domain.model.enums.LessonStatus
+import com.example.crmedumobile.domain.model.enum.LessonStatus
+import java.time.LocalDate
+import java.time.ZonedDateTime
 
 data class Lesson(
     val id: Long,
-    val groupLesson: GroupLesson,
-    val status: LessonStatus,
+    val subject: Subject,
+    val program: Program,
+    val tutor: Tutor,
+    val students: Set<Student>,
     val notes: String,
-    val isPaid: Boolean,
-    val attendanceStatus: AttendanceStatus
+    val lessonStatus: LessonStatus,
+    val startTime: ZonedDateTime,
+    val endTime: ZonedDateTime,
+    val date: LocalDate,
+    val link: String
 )

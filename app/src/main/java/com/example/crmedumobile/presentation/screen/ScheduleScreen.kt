@@ -6,21 +6,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.crmedumobile.presentation.viewmodel.UserViewModel
+import com.example.crmedumobile.presentation.viewmodel.ScheduleViewModel
 
 @Composable
-fun ProfileScreen(
-    viewModel: UserViewModel = hiltViewModel(),
+fun ScheduleScreen(
+    viewModel: ScheduleViewModel = hiltViewModel(),
 ) {
-    val userState by viewModel.userState.collectAsState()
+    val scheduleState by viewModel.scheduleState.collectAsState()
     LaunchedEffect(Unit) {
-        viewModel.profile()
+        viewModel.loadSchedule()
     }
 
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun ProfileScreenPreview() {
-    ProfileScreen()
+fun ScheduleScreenPreview() {
+    ScheduleScreen()
 }

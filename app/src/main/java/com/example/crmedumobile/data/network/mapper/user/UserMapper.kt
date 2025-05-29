@@ -11,5 +11,6 @@ fun UserResponse.toDomain(): User = User(
     mail = email,
     phone,
     timezone,
-    role
+    role,
+    notificationsEnabled
 )

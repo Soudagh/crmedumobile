@@ -2,11 +2,14 @@ package com.example.crmedumobile.di
 
 import android.content.SharedPreferences
 import com.example.crmedumobile.data.network.repository.AuthRepositoryImpl
+import com.example.crmedumobile.data.network.repository.ScheduleRepositoryImpl
 import com.example.crmedumobile.data.network.repository.UserRepositoryImpl
 import com.example.crmedumobile.data.network.service.AuthService
+import com.example.crmedumobile.data.network.service.ScheduleService
 import com.example.crmedumobile.data.network.service.UserService
 import com.example.crmedumobile.data.network.util.ErrorParser
 import com.example.crmedumobile.domain.repository.auth.AuthRepository
+import com.example.crmedumobile.domain.repository.schedule.ScheduleRepository
 import com.example.crmedumobile.domain.repository.user.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -28,5 +31,12 @@ object RepositoryModule {
         AuthRepositoryImpl(authService, errorParser, sharedPreferences)
 
     @Provides
-    fun provideUserRepository(userService: UserService): UserRepository = UserRepositoryImpl(userService)
+    fun provideUserRepository(userService: UserService): UserRepository =
+        UserRepositoryImpl(userService)
+
+    @Provides
+    fun provideScheduleRepository(
+        scheduleService: ScheduleService,
+        errorParser: ErrorParser
+    ): ScheduleRepository = ScheduleRepositoryImpl(scheduleService, errorParser)
 }

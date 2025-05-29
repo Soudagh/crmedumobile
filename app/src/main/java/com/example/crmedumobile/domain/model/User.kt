@@ -10,6 +10,6 @@ data class User(
     val mail: String,
     val phone: String,
     val timezone: String,
-    val role: UserRole
-//    val notificationsEnabled: Boolean
+    val role: UserRole,
+    val notificationsEnabled: Boolean
 )

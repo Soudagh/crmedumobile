@@ -13,4 +13,5 @@ data class UserResponse(
     val timezone: String,
     val role: UserRole,
     val status: UserStatus,
+    val notificationsEnabled: Boolean
 )

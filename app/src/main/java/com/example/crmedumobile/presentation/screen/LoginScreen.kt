@@ -55,7 +55,6 @@ fun LoginScreen(
 
             is LoginUiState.Error -> {
                 val message = (loginState as LoginUiState.Error).message
-                println(message)
                 scope.launch {
                     snackbarHostState.showSnackbar(message)
                 }

@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import androidx.annotation.DrawableRes
+=======
+>>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -29,7 +32,10 @@ import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+<<<<<<< HEAD
 import androidx.compose.ui.res.vectorResource
+=======
+>>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -61,7 +67,11 @@ fun PrimaryTextField(
     isOnlyNumbers: Boolean = false,
     onTextChange: (String) -> Unit,
     visualTransformation: VisualTransformation = VisualTransformation.None,
+<<<<<<< HEAD
     @DrawableRes trailingIcon: Int? = null,
+=======
+    trailingIcon: ImageVector? = null,
+>>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
     keyboardType: KeyboardType = KeyboardType.Text,
     trailingIconModifier: Modifier = Modifier,
     onTrailingIconClicked: () -> Unit = {},
@@ -131,7 +141,11 @@ fun PrimaryTextField(
                             onClick = onTrailingIconClicked
                         ) {
                             Icon(
+<<<<<<< HEAD
                                 imageVector = ImageVector.vectorResource(id = trailingIcon),
+=======
+                                imageVector = trailingIcon,
+>>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
                                 contentDescription = null,
                                 tint = DarkPurple,
                             )

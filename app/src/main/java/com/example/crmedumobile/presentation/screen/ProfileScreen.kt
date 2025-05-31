@@ -1,5 +1,6 @@
 package com.example.crmedumobile.presentation.screen
 
+<<<<<<< HEAD
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Divider
@@ -100,11 +101,31 @@ fun ProfileScreenContent(
             onScreenSelected = onNavigate
         )
     }
+=======
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.crmedumobile.presentation.viewmodel.UserViewModel
+
+@Composable
+fun ProfileScreen(
+    viewModel: UserViewModel = hiltViewModel(),
+) {
+    val userState by viewModel.userState.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.profile()
+    }
+
+>>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
+<<<<<<< HEAD
     CrmedumobileTheme {
         ProfileScreenContent(
             profileData = ProfileData(
@@ -117,4 +138,7 @@ fun ProfileScreenPreview() {
             onNavigate = {}
         )
     }
+=======
+    ProfileScreen()
+>>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+<<<<<<< HEAD
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,6 +18,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.crmedumobile.presentation.screen.ProfileScreen
 import com.example.crmedumobile.presentation.screen.ScheduleScreen
+=======
+import com.example.crmedumobile.presentation.navigation.RootNavGraph
+>>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 import com.example.crmedumobile.presentation.theme.CrmedumobileTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,6 +30,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+<<<<<<< HEAD
             CrmedumobileTheme {
                 //RootNavGraph()
                 //ProfileScreen()
@@ -93,4 +98,11 @@ fun GreetingPreview() {
     CrmedumobileTheme {
         Greeting("Android")
     }
+=======
+            CrmedumobileTheme(darkTheme = false) {
+                RootNavGraph()
+            }
+        }
+    }
+>>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 }

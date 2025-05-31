@@ -12,7 +12,11 @@ android {
 
     defaultConfig {
         applicationId = "com.example.crmedumobile"
+<<<<<<< HEAD
         minSdk = 24
+=======
+        minSdk = 26
+>>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -75,4 +79,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.navigation.compose)
+<<<<<<< HEAD
+=======
+    implementation(libs.androidx.material3)
+    implementation(libs.material.icons.extended)
+    implementation(libs.java.jwt)
+>>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 }

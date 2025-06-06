@@ -21,4 +21,9 @@
     <string name="status">Статус: </string>
     <string name="passed">Сдано</string>
     <string name="failed">Не сдано</string>
+    <string name="task">Задание %s</string>
+    <string name="score">%s балл</string>
+    <string name="answer">Решение</string>
+    <string name="attachedFile">Прикрепленный файл</string>
+    <string name="submit">СДАТЬ</string>
 </resources>

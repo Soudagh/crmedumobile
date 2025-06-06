@@ -32,7 +32,7 @@ fun HomeWorkScreen(modifier: Modifier = Modifier, controller: NavHostController)
 
         }, modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp).height(80.dp))
         PrimaryButton(stringResource(R.string.theory), onButtonClick = {
-            controller.navigate("theory")
+
         }, modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp).height(80.dp))
         PrimaryButton(stringResource(R.string.readyVariants), onButtonClick = {
 

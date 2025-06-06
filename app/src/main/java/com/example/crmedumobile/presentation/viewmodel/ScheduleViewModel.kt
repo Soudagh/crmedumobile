@@ -25,7 +25,6 @@ class ScheduleViewModel @Inject constructor(): ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             //for loading screen
             _state.value = ScheduleState.Loading
-            delay(2000)
             for (i in 1 until 20){
                 list.add(ScheduleModel(
                     "13:00",

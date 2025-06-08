@@ -6,6 +6,5 @@ data class ScheduleModel(
     val group: String = "",
     val theme: String = "",
     val teacher: String = "",
-    val link: String = "",
-    val date: String = ""
+    val link: String = ""
 )

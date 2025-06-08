@@ -5,10 +5,4 @@ import com.example.crmedumobile.domain.model.Jwt
 
 interface AuthRepository {
     suspend fun login(auth: Auth): Jwt
-
-    fun isLoggedIn(): Boolean
-
-    fun getRole(): String
-
-    fun logout()
 }

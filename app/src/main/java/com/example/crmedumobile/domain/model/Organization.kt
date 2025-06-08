@@ -1,7 +1,8 @@
 package com.example.crmedumobile.domain.model
 
-data class Subject(
+data class Organization(
     val id: Long,
     val name: String,
-    val organization: Organization
+    val mail: String,
+    val phone: String
 )

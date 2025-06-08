@@ -54,7 +54,7 @@ fun ScienceScreen(modifier: Modifier = Modifier, controller: NavHostController, 
         LazyColumn {
             itemsIndexed(list)  {index, item ->
                 Card(modifier = modifier.fillMaxWidth().padding(10.dp, vertical = 5.dp), shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(
-                    colorResource(R.color.schedaleBackgroundColor)
+                    colorResource(R.color.itemBackgroundColor)
                 )) {
                     Row(modifier.fillMaxWidth()) {
                         Column(modifier.fillMaxWidth().weight(10f)) {
@@ -65,10 +65,12 @@ fun ScienceScreen(modifier: Modifier = Modifier, controller: NavHostController, 
                                 Text(if (item.status.ordinal == 0) stringResource(R.string.passed) else stringResource(R.string.failed), fontSize = 16.sp, color = if (item.status.ordinal == 0) colorResource(R.color.green) else colorResource(R.color.red), style = BoldMontserrat36)
                             }
                         }
-                        IconButton(onClick = {
-
-                        }, modifier = modifier.weight(2f).align(Alignment.CenterVertically)) {
-                            Icon(painter = painterResource(R.drawable.ic_edit), null, tint = Black)
+                        if (item.status.ordinal == 1){
+                            IconButton(onClick = {
+                                controller.navigate("theory/${index}")
+                            }, modifier = modifier.weight(2f).align(Alignment.CenterVertically)) {
+                                Icon(painter = painterResource(R.drawable.ic_edit), null, tint = Black)
+                            }
                         }
                     }
                 }

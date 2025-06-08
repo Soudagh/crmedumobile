@@ -1,32 +1,41 @@
 package com.example.crmedumobile.presentation.viewmodel
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.crmedumobile.domain.usecase.GetNotificationsUseCase
-import com.example.crmedumobile.presentation.states.NotificationsUiState
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import com.example.crmedumobile.domain.model.NotificationModel
+import com.example.crmedumobile.domain.model.enums.NotificationType
 
-@HiltViewModel
-class NotificationViewModel @Inject constructor(
-    private val notificationUseCase: GetNotificationsUseCase
-): ViewModel() {
+class NotificationViewModel : ViewModel() {
 
-    private val _notificationsState = MutableStateFlow<NotificationsUiState>(NotificationsUiState.Idle)
-    val notificationsState: StateFlow<NotificationsUiState> = _notificationsState
+    private val _notifications = mutableStateListOf<NotificationModel>()
+    val notifications: List<NotificationModel> get() = _notifications
 
-    fun loadNotifications() {
-        viewModelScope.launch {
-            _notificationsState.value = NotificationsUiState.Loading
-            try {
-                val notifications = notificationUseCase()
-                _notificationsState.value = NotificationsUiState.Success(notifications)
-            } catch (e: Exception) {
-                _notificationsState.value = NotificationsUiState.Error(e.message ?: "Ошибка загрузки уведомлений")
-            }
-        }
+    init {
+        loadNotifications()
+    }
+
+    private fun loadNotifications() {
+        _notifications.addAll(
+            listOf(
+                NotificationModel(
+                    id = 1,
+                    title = "Назначено занятие на сегодня.",
+                    description = "Математика (Мария Космач). 14:00",
+                    type = NotificationType.LESSON
+                ),
+                NotificationModel(
+                    id = 2,
+                    title = "Назначено ДЗ по математике.",
+                    description = "Дедлайн: 18.05.2025",
+                    type = NotificationType.HOMEWORK
+                ),
+                NotificationModel(
+                    id = 3,
+                    title = "Скоро нужно будет оплачивать курс по Математике.",
+                    description = "",
+                    type = NotificationType.PAYMENT
+                )
+            )
+        )
     }
 }

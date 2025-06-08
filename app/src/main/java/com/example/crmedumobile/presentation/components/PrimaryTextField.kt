@@ -1,3 +1,4 @@
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -59,7 +61,7 @@ fun PrimaryTextField(
     isOnlyNumbers: Boolean = false,
     onTextChange: (String) -> Unit,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    trailingIcon: ImageVector? = null,
+    @DrawableRes trailingIcon: Int? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     trailingIconModifier: Modifier = Modifier,
     onTrailingIconClicked: () -> Unit = {},
@@ -129,7 +131,7 @@ fun PrimaryTextField(
                             onClick = onTrailingIconClicked
                         ) {
                             Icon(
-                                imageVector = trailingIcon,
+                                imageVector = ImageVector.vectorResource(id = trailingIcon),
                                 contentDescription = null,
                                 tint = DarkPurple,
                             )

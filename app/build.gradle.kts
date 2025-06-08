@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.crmedumobile"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -44,6 +44,11 @@ android {
 }
 
 dependencies {
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.cardview)
+    implementation(libs.material)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.annotation)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.room.runtime)
@@ -75,7 +80,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.navigation.compose)
-    implementation(libs.androidx.material3)
-    implementation(libs.material.icons.extended)
-    implementation(libs.java.jwt)
 }

@@ -22,23 +22,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.crmedumobile.R
 import com.example.crmedumobile.domain.model.ScheduleModel
-import com.example.crmedumobile.presentation.theme.Purple
 import com.example.crmedumobile.presentation.theme.Purple40
-import com.example.crmedumobile.presentation.theme.PurpleGrey40
 import androidx.core.net.toUri
 import com.example.crmedumobile.presentation.theme.CrmEduMontserrat
 
 @Composable
 fun ScheduleItem(modifier: Modifier = Modifier, item: ScheduleModel) {
     val context = LocalContext.current
-    Card(modifier = modifier.fillMaxWidth().padding(10.dp), colors = CardDefaults.cardColors(colorResource(R.color.schedaleBackgroundColor))) {
+    Card(modifier = modifier.fillMaxWidth().padding(10.dp), colors = CardDefaults.cardColors(colorResource(R.color.itemBackgroundColor))) {
         Column(modifier.fillMaxWidth().padding(10.dp)) {
             Row(modifier.clip(
                 RoundedCornerShape(15.dp)

@@ -1,9 +1,5 @@
 package com.example.crmedumobile.presentation.theme
 
-<<<<<<< HEAD
-import android.app.Activity
-=======
->>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -12,10 +8,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-<<<<<<< HEAD
-=======
 import androidx.compose.ui.graphics.Color
->>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
@@ -27,14 +20,8 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = Purple,
     secondary = PurpleGrey40,
-<<<<<<< HEAD
-    tertiary = Pink40
-
-
-=======
     tertiary = Pink40,
     background = Color.White
->>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

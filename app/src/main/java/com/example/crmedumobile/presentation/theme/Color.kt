@@ -19,7 +19,7 @@ val Purple2 = Color(0xFF6200EE)
 val GrayLine = Color(0xFFE0E0E0)
 val Black = Color(0xFF000000)
 
-val ButtonColors = Color ( 0xFFD9BDDB)
+val ButtonColors = Color(0xFFD9BDDB)
 
 val SubjectColors = listOf(
     Color(0xFFBBDEFB),
@@ -28,4 +28,3 @@ val SubjectColors = listOf(
     Color(0xFFFFCDD2),
     Color(0xFFFFE0B2)
 )
-

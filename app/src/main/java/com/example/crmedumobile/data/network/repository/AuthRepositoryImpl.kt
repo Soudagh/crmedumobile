@@ -1,18 +1,5 @@
 package com.example.crmedumobile.data.network.repository
 
-<<<<<<< HEAD
-import com.example.crmedumobile.data.network.mapper.auth.toDomain
-import com.example.crmedumobile.data.network.mapper.auth.toRequest
-import com.example.crmedumobile.data.network.service.AuthService
-import com.example.crmedumobile.domain.model.Auth
-import com.example.crmedumobile.domain.model.Jwt
-import com.example.crmedumobile.domain.repository.auth.AuthRepository
-
-class AuthRepositoryImpl(
-    private val authService: AuthService
-) : AuthRepository {
-    override suspend fun login(auth: Auth): Jwt = authService.login(auth.toRequest()).toDomain()
-=======
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.auth0.jwt.JWT
@@ -72,5 +59,4 @@ class AuthRepositoryImpl @Inject constructor(
             null
         }
     }
->>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 }

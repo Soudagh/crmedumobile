@@ -5,8 +5,6 @@
     <string name="max_count_char">Максимальное количество символов</string>
     <string name="log_in">Логин</string>
     <string name="password">Пароль</string>
-<<<<<<< HEAD
-=======
     <string name="login_field_blank_error">Поле логина не может быть пустым</string>
     <string name="password_field_blank_error">Поле пароля не может быть пустым</string>
     <string name="schedule">Расписание</string>
@@ -25,5 +23,4 @@
     <string name="status">Статус: </string>
     <string name="passed">Сдано</string>
     <string name="failed">Не сдано</string>
->>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 </resources>

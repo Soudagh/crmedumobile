@@ -82,7 +82,7 @@ fun RootNavGraph(
             startDestination = "student_home"
         ) {
             composable("student_home") {
-                HomeScreenStudent()
+                HomeScreenStudent(navController)
             }
         }
 

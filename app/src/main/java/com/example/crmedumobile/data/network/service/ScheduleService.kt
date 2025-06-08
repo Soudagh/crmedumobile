@@ -5,6 +5,6 @@ import retrofit2.http.GET
 
 interface ScheduleService {
 
-    @GET("users/me/schedule")
+    @GET("users/schedule")
     suspend fun getUserSchedule(): ScheduleResponse
 }

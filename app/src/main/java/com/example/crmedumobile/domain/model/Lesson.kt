@@ -21,7 +21,6 @@ data class Lesson(
     val subject: Subject,
     val program: Program,
     val tutor: Tutor,
-    val students: Set<Student>,
     val notes: String,
     val lessonStatus: LessonStatus,
     val startTime: ZonedDateTime,

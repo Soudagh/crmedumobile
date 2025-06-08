@@ -24,7 +24,7 @@ fun NavGraphBuilder.studentNavGraph(navController: NavHostController) {
         ScheduleScreen(controller = navController)
     }
     composable("profile") {
-        ProfileScreen()
+        ProfileScreen(navController = navController)
     }
     composable("theory") {
         TheoryScreen(controller = navController)

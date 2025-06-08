@@ -1,9 +1,5 @@
 package com.example.crmedumobile.presentation.theme
 
-<<<<<<< HEAD
-import androidx.compose.material3.ButtonColors
-=======
->>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -16,7 +12,6 @@ val Pink40 = Color(0xFF7D5260)
 
 val Purple = Color(0xFFD9BDDB)
 val DarkPurple = Color(0xFF802E87)
-<<<<<<< HEAD
 val Gray = Color(0xFF6E6565)
 
 val White = Color(0xFFFFFFFF)
@@ -34,6 +29,3 @@ val SubjectColors = listOf(
     Color(0xFFFFE0B2)
 )
 
-=======
-val Gray = Color(0xFF6E6565)
->>>>>>> 7e266e1b99b341a8fad2a20e4a6e8ab033d91a41

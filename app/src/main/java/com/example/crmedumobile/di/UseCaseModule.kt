@@ -8,6 +8,7 @@ import com.example.crmedumobile.domain.usecase.ChangeNotifyModeUseCase
 import com.example.crmedumobile.domain.usecase.GetNotificationsUseCase
 import com.example.crmedumobile.domain.usecase.GetProfileUseCase
 import com.example.crmedumobile.domain.usecase.GetScheduleUseCase
+import com.example.crmedumobile.domain.usecase.LogOutUseCase
 import com.example.crmedumobile.domain.usecase.LoginUseCase
 import dagger.Module
 import dagger.Provides
@@ -22,6 +23,11 @@ object UseCaseModule {
     fun provideLoginUseCase(
         authRepository: AuthRepository
     ): LoginUseCase = LoginUseCase(authRepository)
+
+    @Provides
+    fun provideLogOutUseCase(
+        authRepository: AuthRepository
+    ): LogOutUseCase = LogOutUseCase(authRepository)
 
     @Provides
     fun provideProfileUseCase(

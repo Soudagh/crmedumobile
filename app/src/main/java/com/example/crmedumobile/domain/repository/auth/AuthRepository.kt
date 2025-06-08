@@ -9,4 +9,6 @@ interface AuthRepository {
     fun isLoggedIn(): Boolean
 
     fun getRole(): String
+
+    fun logout()
 }

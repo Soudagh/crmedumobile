@@ -29,7 +29,7 @@ fun HomeScreenNavigation(modifier: Modifier = Modifier, controller: NavHostContr
             ScheduleScreen(controller)
         }
         composable("profile") {
-            ProfileScreen()
+            ProfileScreen(navController = controller)
         }
         composable("theory") {
             TheoryScreen(controller = controller)

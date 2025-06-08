@@ -14,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase
+
 ) : ViewModel() {
 
     private val _loginState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
@@ -31,4 +32,6 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
+
 }

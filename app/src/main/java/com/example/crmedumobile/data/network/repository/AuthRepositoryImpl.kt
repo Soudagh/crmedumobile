@@ -43,6 +43,13 @@ class AuthRepositoryImpl @Inject constructor(
         return sharedPreferences.getString("user_role", null) ?: UserRole.STUDENT.name
     }
 
+    override fun logout() {
+        sharedPreferences.edit {
+            remove("jwt_token")
+            remove("user_role")
+        }
+    }
+
 
     private fun decodeRoleFromJwt(token: String): String? {
         return try {

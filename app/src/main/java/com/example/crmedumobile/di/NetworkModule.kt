@@ -6,7 +6,9 @@ import com.example.crmedumobile.data.network.service.AuthService
 import com.example.crmedumobile.data.network.service.NotificationService
 import com.example.crmedumobile.data.network.service.ScheduleService
 import com.example.crmedumobile.data.network.service.UserService
+import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.ToJson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +17,8 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -24,6 +28,8 @@ object NetworkModule {
 
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder()
+        .add(ZonedDateTimeAdapter())
+        .add(LocalDateAdapter())
         .addLast(com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory())
         .build()
 
@@ -73,4 +79,28 @@ object NetworkModule {
     @Provides
     fun provideNotificationService(retrofit: Retrofit): NotificationService =
         retrofit.create(NotificationService::class.java)
+}
+
+class ZonedDateTimeAdapter {
+    @ToJson
+    fun toJson(value: ZonedDateTime): String {
+        return value.toString()
+    }
+
+    @FromJson
+    fun fromJson(value: String): ZonedDateTime {
+        return ZonedDateTime.parse(value)
+    }
+}
+
+class LocalDateAdapter {
+    @ToJson
+    fun toJson(value: LocalDate): String {
+        return value.toString()
+    }
+
+    @FromJson
+    fun fromJson(value: String): LocalDate {
+        return LocalDate.parse(value)
+    }
 }

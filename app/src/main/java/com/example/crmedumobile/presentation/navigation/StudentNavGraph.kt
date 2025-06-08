@@ -9,7 +9,7 @@ import com.example.crmedumobile.presentation.screen.ElementsScreen
 import com.example.crmedumobile.presentation.screen.HomeWorkScreen
 import com.example.crmedumobile.presentation.screen.NotificationsScreen
 import com.example.crmedumobile.presentation.screen.ProfileScreen
-import com.example.crmedumobile.presentation.screen.ScheduleScreen
+import com.example.crmedumobile.presentation.screen.ScheduleScreenStudent
 import com.example.crmedumobile.presentation.screen.ScienceScreen
 import com.example.crmedumobile.presentation.screen.TheoryScreen
 
@@ -21,7 +21,7 @@ fun NavGraphBuilder.studentNavGraph(navController: NavHostController) {
         NotificationsScreen()
     }
     composable("schedule") {
-        ScheduleScreen(controller = navController)
+        ScheduleScreenStudent(controller = navController)
     }
     composable("profile") {
         ProfileScreen(navController = navController)

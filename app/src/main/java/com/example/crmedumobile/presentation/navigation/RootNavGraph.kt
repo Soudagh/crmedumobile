@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.example.crmedumobile.presentation.screen.HomeScreenStudent
+import com.example.crmedumobile.presentation.screen.HomeScreenTutor
 import com.example.crmedumobile.presentation.screen.LoginScreen
 import com.example.crmedumobile.presentation.viewmodel.SplashViewModel
 
@@ -61,7 +62,7 @@ fun RootNavGraph(
             startDestination = "tutor_home"
         ) {
             composable("tutor_home") {
-                // TutorHomeScreen()
+                HomeScreenTutor(navController)
             }
         }
     }

@@ -1,0 +1,32 @@
+package com.example.crmedumobile.presentation.screen
+
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import com.example.crmedumobile.presentation.components.BottomTabBar
+import com.example.crmedumobile.presentation.navigation.tutorNavGraph
+
+@Composable
+fun HomeScreenTutor(navHostController: NavHostController) {
+    val innerNavController = rememberNavController()
+
+    Scaffold(
+        bottomBar = {
+            BottomTabBar(
+                controller = innerNavController
+            )
+        }
+    ) { padding ->
+        NavHost(
+            navController = innerNavController,
+            startDestination = "homeWork",
+            modifier = Modifier.padding(padding)
+        ) {
+            tutorNavGraph(navHostController)
+        }
+    }
+}

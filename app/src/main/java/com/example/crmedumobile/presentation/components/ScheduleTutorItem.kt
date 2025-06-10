@@ -3,6 +3,7 @@ package com.example.crmedumobile.presentation.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,19 +20,14 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.crmedumobile.presentation.theme.BoldMontserrat16
-import com.example.crmedumobile.presentation.theme.RegularMontserrat16
-import com.example.crmedumobile.presentation.theme.RegularMontserrat24
+import com.example.crmedumobile.presentation.states.forNotificationScheduler.ScheduleItemData
+import com.example.crmedumobile.presentation.theme.*
 
 @Composable
-fun ScheduleTutorItem(
-    time: String,
-    name: String,
-    type: String,
-    participant: String,
-    color: Color,
+fun ScheduleItem(
+    item: ScheduleItemData,
     modifier: Modifier = Modifier,
-    onEditClick: () -> Unit = {}
+    onEditClick: (ScheduleItemData) -> Unit = {}
 ) {
     var isAnimating by remember { mutableStateOf(false) }
 
@@ -45,11 +41,20 @@ fun ScheduleTutorItem(
         animationSpec = tween(durationMillis = 300)
     )
 
+    // Определяем цвет обводки на основе статуса посещаемости
+    val borderColor = when (item.attendanceStatus) {
+        "Отсутствовал" -> Color.Red
+        "Присутствовал" -> Color.Green
+        "Уваж. причина" -> Color.Blue
+        else -> Color.Transparent // На случай некорректного статуса
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
-            .background(color)
+            .border(2.dp, borderColor, RoundedCornerShape(18.dp))
+            .background(item.color)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -58,17 +63,17 @@ fun ScheduleTutorItem(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "$time $name",
+                text = "${item.time} ${item.name}",
                 style = RegularMontserrat24,
                 color = Color.Black
             )
             Text(
-                text = type,
+                text = item.type,
                 style = RegularMontserrat16,
                 color = Color.Black
             )
             Text(
-                text = participant,
+                text = item.participant,
                 style = BoldMontserrat16,
                 color = Color.Black
             )
@@ -84,8 +89,7 @@ fun ScheduleTutorItem(
                 .rotate(rotation)
                 .clickable {
                     isAnimating = true
-                    // TODO: Реализовать изменение расписания
-                    onEditClick()
+                    onEditClick(item)
                 }
         )
     }
@@ -93,13 +97,18 @@ fun ScheduleTutorItem(
 
 @Preview(showBackground = true)
 @Composable
-fun ScheduleTutorItemPreview() {
-    ScheduleTutorItem(
-        time = "10:00",
-        name = "Математика",
-        type = "Индивидуальное",
-        participant = "Иванов",
-        color = Color(0xFFBBDEFB),
+fun ScheduleItemPreview() {
+    ScheduleItem(
+        item = ScheduleItemData(
+            id = "preview_1",
+            time = "10:00",
+            name = "Математика",
+            type = "Индивидуальное",
+            participant = "Иванов",
+            color = Color(0xFFBBDEFB),
+            dateTime = "2025-05-05T10:00:00Z",
+            attendanceStatus = "Присутствовал"
+        ),
         onEditClick = {}
     )
 }

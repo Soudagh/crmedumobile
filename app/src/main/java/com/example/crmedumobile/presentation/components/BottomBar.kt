@@ -1,74 +1,72 @@
 package com.example.crmedumobile.presentation.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.crmedumobile.R
-import com.example.crmedumobile.presentation.states.Screen
-import com.example.crmedumobile.presentation.theme.Purple
+import com.example.crmedumobile.domain.model.BottomBarItem
 
 @Composable
 fun BottomTabBar(
-    selectedScreen: Screen,
-    onScreenSelected: (Screen) -> Unit
+    controller: NavHostController,
+    modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(85.dp)
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            .background(Purple)
-            .padding(vertical = 16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+    var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
+    val list = listOf(
+        BottomBarItem(
+            "notes",
+            R.drawable.note_icon,
+            "notes"
+        ),
+        BottomBarItem(
+            stringResource(R.string.notifications),
+            R.drawable.icon_font_bell,
+            "notifications"
+        ),
+        BottomBarItem(
+            stringResource(R.string.schedule),
+            R.drawable.icon_font_calendar_clock,
+            "schedule"
+        ),
+        BottomBarItem(
+            stringResource(R.string.profile),
+            R.drawable.icon_font_user,
+            "profile"
+        )
+    )
+    NavigationBar(
+        modifier = modifier,
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.note_icon),
-            contentDescription = "Notes",
-            tint = if (selectedScreen == Screen.NOTES) Color.White else Color.Black,
-            modifier = Modifier
-                .size(36.dp)
-                .clickable { onScreenSelected(Screen.NOTES) }
-        )
-        Icon(
-            painter = painterResource(id = R.drawable.icon_font_bell),
-            contentDescription = "Notifications",
-            tint = if (selectedScreen == Screen.NOTIFICATIONS) Color.White else Color.Black,
-            modifier = Modifier
-                .size(36.dp)
-                .clickable { onScreenSelected(Screen.NOTIFICATIONS) }
-        )
-        Icon(
-            painter = painterResource(id = R.drawable.icon_font_calendar_clock),
-            contentDescription = "Calendar",
-            tint = if (selectedScreen == Screen.CALENDAR) Color.White else Color.Black,
-            modifier = Modifier
-                .size(36.dp)
-                .clickable { onScreenSelected(Screen.CALENDAR) }
-        )
-        Icon(
-            painter = painterResource(id = R.drawable.icon_font_user),
-            contentDescription = "Profile",
-            tint = if (selectedScreen == Screen.PROFILE) Color.White else Color.Black,
-            modifier = Modifier
-                .size(36.dp)
-                .clickable { onScreenSelected(Screen.PROFILE) }
-        )
+        list.forEachIndexed { index, item ->
+            NavigationBarItem(
+                selected = selectedItemIndex == index,
+                onClick = {
+                    selectedItemIndex = index
+                    controller.navigate(item.route)
+                },
+                icon = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(painterResource(item.icon), null, tint = Black)
+                        if (selectedItemIndex == index) {
+                            Text(item.title, fontSize = 10.sp)
+                        }
+                    }
+                }
+            )
+        }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BottomTabBarPreview() {
-    BottomTabBar(selectedScreen = Screen.NOTES, onScreenSelected = {})
 }

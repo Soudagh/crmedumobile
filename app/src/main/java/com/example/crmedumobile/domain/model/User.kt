@@ -2,6 +2,7 @@ package com.example.crmedumobile.domain.model
 
 import com.example.crmedumobile.domain.model.enums.UserRole
 
+
 data class User(
     val id: Long,
     val surname: String,
@@ -11,6 +12,5 @@ data class User(
     val phone: String,
     val timezone: String,
     val role: UserRole,
-    val organization: Organization,
     val notificationsEnabled: Boolean
 )

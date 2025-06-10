@@ -1,44 +1,90 @@
 package com.example.crmedumobile.presentation.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.crmedumobile.presentation.components.BottomTabBar
+import androidx.navigation.NavHostController
+import com.example.crmedumobile.domain.model.ProfileData
 import com.example.crmedumobile.presentation.components.LogoutButton
 import com.example.crmedumobile.presentation.components.Notification
 import com.example.crmedumobile.presentation.components.ProfileItem
-import com.example.crmedumobile.presentation.states.Screen
-import com.example.crmedumobile.presentation.theme.*
-import com.example.crmedumobile.presentation.viewmodel.ProfileData
-import com.example.crmedumobile.presentation.viewmodel.ProfileViewModel
+import com.example.crmedumobile.presentation.state.UserUiState
+import com.example.crmedumobile.presentation.theme.DarkPurple
+import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat32
+import com.example.crmedumobile.presentation.theme.paddingButton
+import com.example.crmedumobile.presentation.theme.paddingMedium
+import com.example.crmedumobile.presentation.theme.paddingSmall
+import com.example.crmedumobile.presentation.viewmodel.UserViewModel
 
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel(),
-    onNavigate: (Screen) -> Unit
+    viewModel: UserViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
-    val profileData = viewModel.getProfileData()
-    ProfileScreenContent(
-        profileData = profileData,
-        onToggleNotifications = { viewModel.toggleNotifications(it) },
-        onNavigate = onNavigate
-    )
+    val userState by viewModel.userState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.profile()
+    }
+
+    when (val state = userState) {
+        is UserUiState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is UserUiState.Success -> {
+            ProfileScreenContent(
+                profileData = state.profile,
+                onToggleNotifications = { isEnabled ->
+                    println(isEnabled)
+                    viewModel.changeNotifyMode(isEnabled)
+                },
+                onLogout = {
+                    viewModel.logout()
+                    navController.navigate("login") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        is UserUiState.Error -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Ошибка: ${state.message}")
+            }
+        }
+
+        else -> {}
+    }
 }
+
 
 @Composable
 fun ProfileScreenContent(
     profileData: ProfileData,
     onToggleNotifications: (Boolean) -> Unit,
-    onNavigate: (Screen) -> Unit
+    onLogout: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -72,12 +118,6 @@ fun ProfileScreenContent(
             value = profileData.fullName,
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        ProfileItem(
-            label = "Статус",
-            value = profileData.status,
-            modifier = Modifier.fillMaxWidth()
-        )
 
         Spacer(modifier = Modifier.height(paddingMedium))
 
@@ -90,31 +130,24 @@ fun ProfileScreenContent(
         Spacer(modifier = Modifier.height(paddingButton))
 
         LogoutButton(
-            onClick = { /* TODO: Добавить Навигацию */ },
+            onClick = onLogout,
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
-        BottomTabBar(
-            selectedScreen = com.example.crmedumobile.presentation.states.Screen.PROFILE,
-            onScreenSelected = onNavigate
-        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
-    CrmedumobileTheme {
-        ProfileScreenContent(
-            profileData = ProfileData(
-                role = "Преподаватель",
-                fullName = "Губанова Елена",
-                status = "Активен",
-                notifications = true
-            ),
-            onToggleNotifications = {},
-            onNavigate = {}
-        )
-    }
+    ProfileScreenContent(
+        profileData = ProfileData(
+            role = "Преподаватель",
+            fullName = "Губанова Елена",
+            notifications = true
+        ),
+        onToggleNotifications = {},
+        onLogout = {}
+    )
 }

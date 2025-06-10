@@ -3,8 +3,8 @@ package com.example.crmedumobile.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crmedumobile.domain.model.Auth
-import com.example.crmedumobile.presentation.states.LoginUiState
-import com.example.crmedumobile.presentation.usecase.LoginUseCase
+import com.example.crmedumobile.domain.usecase.LoginUseCase
+import com.example.crmedumobile.presentation.state.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase
+
 ) : ViewModel() {
 
     private val _loginState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
@@ -31,4 +32,6 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
+
 }

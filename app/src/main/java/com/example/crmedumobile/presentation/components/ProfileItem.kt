@@ -1,12 +1,11 @@
 package com.example.crmedumobile.presentation.components
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.crmedumobile.presentation.theme.RegularMontserrat24 // Обновленный шрифт
+import com.example.crmedumobile.presentation.theme.RegularMontserrat24
 
 @Composable
 fun ProfileItem(

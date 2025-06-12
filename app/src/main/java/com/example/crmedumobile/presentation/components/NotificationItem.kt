@@ -9,22 +9,22 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.crmedumobile.domain.model.NotificationModel
-import com.example.crmedumobile.domain.model.enums.NotificationType
+import com.example.crmedumobile.domain.model.Notification
+import com.example.crmedumobile.domain.model.NotificationType
 
 @Composable
-fun NotificationItem(modifier: Modifier = Modifier, notification: NotificationModel) {
-    val backgroundColor = when (notification.type) {
+fun NotificationItem(modifier: Modifier = Modifier, notification: Notification) {
+    val backgroundColor = when (notification.notificationType) {
         NotificationType.LESSON -> Color(0xFFE8E9FF)
         NotificationType.HOMEWORK -> Color(0xFFD9BDDB)
-        NotificationType.PAYMENT -> Color(0xFFDFF8E9)
+        NotificationType.PAYMENT -> Color(0xFF79E4FF)
+        NotificationType.OTHER -> Color(0xFF79E4FF)
     }
 
     Card(
@@ -47,7 +47,7 @@ fun NotificationItem(modifier: Modifier = Modifier, notification: NotificationMo
                     )
                 }
 
-                if (notification.type != NotificationType.PAYMENT) {
+                if (notification.notificationType != NotificationType.PAYMENT) {
                     Text(
                         text = "Перейти",
                         color = Color.Blue,

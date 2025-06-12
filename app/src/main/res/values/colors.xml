@@ -14,6 +14,7 @@
     <color name="linkColor">#0022FF</color>
     <color name="light_green_very_light">#DBFFD9</color>
     <color name="itemBackgroundColor">#E1DEFF</color>
+    <color name="schedaleBackgroundColor">#E1DEFF</color>
     <color name="green">#2B6948</color>
     <color name="red">#D20808</color>
 </resources>

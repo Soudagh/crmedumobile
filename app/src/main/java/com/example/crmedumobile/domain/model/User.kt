@@ -11,6 +11,5 @@ data class User(
     val phone: String,
     val timezone: String,
     val role: UserRole,
-    val organization: Organization,
     val notificationsEnabled: Boolean
 )

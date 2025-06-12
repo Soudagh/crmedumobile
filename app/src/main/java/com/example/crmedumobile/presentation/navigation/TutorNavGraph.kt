@@ -7,8 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.crmedumobile.presentation.screen.ElementsScreen
 import com.example.crmedumobile.presentation.screen.HomeWorkScreen
-import com.example.crmedumobile.presentation.screen.NotificationsScreen
-import com.example.crmedumobile.presentation.screen.ProfileScreen
+import com.example.crmedumobile.presentation.screen.NotificationScreen
+import com.example.crmedumobile.presentation.screen.ProfileScreenTutor
 import com.example.crmedumobile.presentation.screen.ScheduleScreenTutor
 import com.example.crmedumobile.presentation.screen.ScienceScreen
 import com.example.crmedumobile.presentation.screen.TheoryScreen
@@ -18,16 +18,16 @@ fun NavGraphBuilder.tutorNavGraph(navController: NavHostController) {
         HomeWorkScreen(controller = navController)
     }
     composable("notifications") {
-        NotificationsScreen()
+        NotificationScreen()
     }
     composable("schedule") {
         ScheduleScreenTutor(controller = navController)
     }
     composable("profile") {
-        ProfileScreen(navController = navController)
+        ProfileScreenTutor(navController = navController)
     }
-    composable("theory") {
-        TheoryScreen(controller = navController)
+    composable("theory/{id}", arguments = listOf(navArgument("id") { type = NavType.IntType })) {
+        TheoryScreen(controller = navController, backStackEntry = it)
     }
     composable("elements") {
         ElementsScreen(controller = navController)

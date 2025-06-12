@@ -1,16 +1,17 @@
 package com.example.crmedumobile.presentation.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,24 +20,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.crmedumobile.R
 import com.example.crmedumobile.domain.model.ProfileData
-import com.example.crmedumobile.presentation.components.LogoutButton
-import com.example.crmedumobile.presentation.components.Notification
-import com.example.crmedumobile.presentation.components.ProfileItem
 import com.example.crmedumobile.presentation.state.UserUiState
-import com.example.crmedumobile.presentation.theme.DarkPurple
-import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat32
-import com.example.crmedumobile.presentation.theme.paddingButton
-import com.example.crmedumobile.presentation.theme.paddingMedium
-import com.example.crmedumobile.presentation.theme.paddingSmall
+import com.example.crmedumobile.presentation.theme.BoldMontserrat36
 import com.example.crmedumobile.presentation.viewmodel.UserViewModel
 
 @Composable
-fun ProfileScreen(
+fun ProfileScreenStudent(
     viewModel: UserViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
@@ -54,12 +53,13 @@ fun ProfileScreen(
         }
 
         is UserUiState.Success -> {
-            ProfileScreenContent(
+            ProfileScreenStudentContent(
                 profileData = state.profile,
                 onToggleNotifications = { isEnabled ->
                     println(isEnabled)
                     viewModel.changeNotifyMode(isEnabled)
                 },
+                onNavigate = { navController.navigate("payment") },
                 onLogout = {
                     viewModel.logout()
                     navController.navigate("login") {
@@ -79,75 +79,62 @@ fun ProfileScreen(
     }
 }
 
-
 @Composable
-fun ProfileScreenContent(
+fun ProfileScreenStudentContent(
     profileData: ProfileData,
     onToggleNotifications: (Boolean) -> Unit,
-    onLogout: () -> Unit
+    onNavigate: () -> Unit,
+    onLogout: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .safeDrawingPadding()
-            .padding(horizontal = paddingMedium),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Text(
-            text = "Профиль",
-            style = SemiBoldMontserrat32,
-            color = Color.Black,
-            modifier = Modifier.padding(bottom = paddingSmall)
+            stringResource(R.string.schedule),
+            fontSize = 28.sp,
+            color = Black,
+            style = BoldMontserrat36,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
         )
-        Divider(
-            color = DarkPurple,
-            thickness = 1.dp,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(paddingMedium))
+        HorizontalDivider()
+        Text(text = "ФИО: ${profileData.fullName}")
+        Text(text = "Статус: ${profileData.role}")
 
-        ProfileItem(
-            label = "Роль",
-            value = profileData.role,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        ProfileItem(
-            label = "Фио",
-            value = profileData.fullName,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = "Уведомления:")
+            Switch(
+                checked = profileData.notifications,
+                onCheckedChange = onToggleNotifications
+            )
+        }
 
-        Spacer(modifier = Modifier.height(paddingMedium))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        Notification(
-            isEnabled = profileData.notifications,
-            onToggle = onToggleNotifications,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Button(onClick = onNavigate) {
+            Text("Оплата")
+        }
 
-        Spacer(modifier = Modifier.height(paddingButton))
+        Spacer(modifier = Modifier.height(24.dp))
 
-        LogoutButton(
+        Button(
             onClick = onLogout,
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
+            colors = ButtonDefaults.buttonColors(Color.LightGray)
+        ) {
+            Text("Выйти")
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ProfileScreenPreview() {
-    ProfileScreenContent(
+fun ProfileScreenStudentPreview() {
+    ProfileScreenStudentContent(
         profileData = ProfileData(
-            role = "Преподаватель",
+            role = "Студент",
             fullName = "Губанова Елена",
             notifications = true
         ),
         onToggleNotifications = {},
-        onLogout = {}
+        onLogout = {},
+        onNavigate = {}
     )
 }

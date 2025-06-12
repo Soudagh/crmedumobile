@@ -51,6 +51,7 @@ fun LoginScreen(
         when (loginState) {
             is LoginUiState.Success -> {
                 onLoginSuccess()
+                println("Успешный вход: ${(loginState as LoginUiState.Success).jwt}")
             }
 
             is LoginUiState.Error -> {
@@ -85,7 +86,7 @@ fun LoginScreenContent(
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    
+
     var isLoginError by remember { mutableStateOf(false) }
     var isPasswordError by remember { mutableStateOf(false) }
 

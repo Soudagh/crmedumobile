@@ -22,7 +22,6 @@ class ElementsViewModel @Inject constructor(): ViewModel() {
     fun getElements() {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = ElementsUiState.Loading
-            delay(2000)
             _uiState.value = ElementsUiState.Success(listOf("Математика", "Информатика", "Русский язык"))
         }
     }

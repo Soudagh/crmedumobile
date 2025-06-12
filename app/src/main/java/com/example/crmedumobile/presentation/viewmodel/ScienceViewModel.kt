@@ -22,7 +22,6 @@ class ScienceViewModel @Inject constructor(): ViewModel()
     fun findElement(index: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = ScienceState.Loading
-            delay(2000)
             _uiState.value = ScienceState.Success(listOf(
                 ScienceModel(
                     "Пифагоровы тройки",

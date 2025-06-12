@@ -64,3 +64,4 @@ val BoldMontserrat16 = BoldMontserratStyle.copy(fontSize = 16.sp)
 val BoldMontserrat20 = BoldMontserratStyle.copy(fontSize = 20.sp)
 val BoldMontserrat24 = BoldMontserratStyle.copy(fontSize = 24.sp)
 val BoldMontserrat36 = BoldMontserratStyle.copy(fontSize = 36.sp)
+

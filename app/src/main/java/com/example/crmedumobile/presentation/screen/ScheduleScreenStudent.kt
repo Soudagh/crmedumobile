@@ -34,15 +34,15 @@ import com.example.crmedumobile.presentation.components.ScheduleStudentItem
 import com.example.crmedumobile.presentation.states.ScheduleUiState
 import com.example.crmedumobile.presentation.theme.BoldMontserrat36
 import com.example.crmedumobile.presentation.theme.Purple40
-import com.example.crmedumobile.presentation.viewmodel.ScheduleViewModel
+import com.example.crmedumobile.presentation.viewmodel.ScheduleStudentViewModel
 import java.time.LocalDate
 
 @Composable
 fun ScheduleScreenStudent(
     controller: NavHostController,
-    viewModel: ScheduleViewModel = hiltViewModel()
+    viewModel: ScheduleStudentViewModel = hiltViewModel()
 ) {
-    val scheduleState by viewModel.scheduleState.collectAsState()
+    val scheduleState by viewModel.getSchedule()
     var list by remember { mutableStateOf(listOf<ScheduleModel>()) }
     var today by remember { mutableStateOf(Pair("", "")) }
 

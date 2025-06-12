@@ -1,5 +1,6 @@
 package com.example.crmedumobile.presentation.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -71,5 +72,8 @@ fun ElementsScreen(modifier: Modifier = Modifier, controller: NavHostController)
                 else -> {}
             }
         }
+    }
+    BackHandler {
+        controller.popBackStack()
     }
 }

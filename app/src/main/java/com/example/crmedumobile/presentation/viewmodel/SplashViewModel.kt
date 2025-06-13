@@ -19,6 +19,10 @@ class SplashViewModel @Inject constructor(
     val startDestination: StateFlow<String?> = _startDestination
 
     init {
+        recalculateStartDestination()
+    }
+
+    fun recalculateStartDestination() {
         viewModelScope.launch {
             val isLoggedIn = authRepository.isLoggedIn()
             val role = authRepository.getRole()
@@ -31,4 +35,9 @@ class SplashViewModel @Inject constructor(
             }
         }
     }
+
+    fun reset() {
+        _startDestination.value = null
+    }
 }
+

@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: (String) -> Unit
 ) {
     val loginState by viewModel.loginState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -50,7 +50,9 @@ fun LoginScreen(
     LaunchedEffect(loginState) {
         when (loginState) {
             is LoginUiState.Success -> {
-                onLoginSuccess()
+                viewModel.getRole { role ->
+                    onLoginSuccess(role)
+                }
                 println("Успешный вход: ${(loginState as LoginUiState.Success).jwt}")
             }
 

@@ -36,7 +36,16 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun isLoggedIn(): Boolean {
-        return sharedPreferences.getString("jwt_token", null) != null
+        val token = sharedPreferences.getString("jwt_token", null) ?: return false
+
+        return try {
+            val decodedJWT = JWT.decode(token)
+            val expiresAt = decodedJWT.expiresAt
+            expiresAt != null && expiresAt.after(java.util.Date())
+        } catch (e: Exception) {
+            logout()
+            false
+        }
     }
 
     override fun getRole(): String {

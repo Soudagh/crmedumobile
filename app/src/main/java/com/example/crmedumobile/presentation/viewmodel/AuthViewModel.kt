@@ -3,6 +3,7 @@ package com.example.crmedumobile.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crmedumobile.domain.model.Auth
+import com.example.crmedumobile.domain.usecase.GetUserRoleUseCase
 import com.example.crmedumobile.domain.usecase.LoginUseCase
 import com.example.crmedumobile.presentation.state.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val roleUseCase: GetUserRoleUseCase
 ) : ViewModel() {
 
     private val _loginState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
@@ -29,6 +31,13 @@ class AuthViewModel @Inject constructor(
             } catch (e: Exception) {
                 _loginState.value = LoginUiState.Error(e.message ?: "Unknown error")
             }
+        }
+    }
+
+    fun getRole(callback: (String) -> Unit) {
+        viewModelScope.launch {
+            val role = roleUseCase()
+            callback(role)
         }
     }
 }

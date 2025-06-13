@@ -23,20 +23,38 @@ import com.example.crmedumobile.presentation.theme.BoldMontserrat36
 @Composable
 fun HomeWorkScreen(modifier: Modifier = Modifier, controller: NavHostController) {
     Column(modifier.fillMaxSize()) {
-        Text(stringResource(R.string.homeWork), fontSize = 28.sp, color = Black, style = BoldMontserrat36, modifier = modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        Text(
+            stringResource(R.string.homeWork),
+            fontSize = 28.sp,
+            color = Black,
+            style = BoldMontserrat36,
+            modifier = modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
         HorizontalDivider()
         PrimaryButton(stringResource(R.string.hw), onButtonClick = {
             controller.navigate("elements")
-        }, modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp).height(80.dp))
+        }, modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .height(80.dp))
         PrimaryButton(stringResource(R.string.controls), onButtonClick = {
 
-        }, modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp).height(80.dp))
+        }, modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .height(80.dp))
         PrimaryButton(stringResource(R.string.theory), onButtonClick = {
-            controller.navigate("theory")
-        }, modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp).height(80.dp))
+        }, modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .height(80.dp))
         PrimaryButton(stringResource(R.string.readyVariants), onButtonClick = {
 
-        }, modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp).height(80.dp))
+        }, modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .height(80.dp))
     }
     BackHandler {
         controller.popBackStack()

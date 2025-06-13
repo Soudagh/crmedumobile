@@ -46,6 +46,7 @@ android {
 dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)

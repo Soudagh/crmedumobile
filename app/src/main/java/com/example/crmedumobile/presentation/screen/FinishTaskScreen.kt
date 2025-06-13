@@ -37,60 +37,56 @@ import com.example.crmedumobile.presentation.theme.Purple40
 import com.example.crmedumobile.presentation.viewmodel.FinishTaskViewModel
 
 @Composable
-fun FinishTaskScreen(modifier: Modifier = Modifier, controller: NavHostController) {
+fun FinishTaskScreen(controller: NavHostController) {
     val viewModel = hiltViewModel<FinishTaskViewModel>()
     val assignment = viewModel.assignment
     val fileName = viewModel.fileName
     val isSubmitted = viewModel.isSubmitted
 
-    Box(modifier.fillMaxSize()) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
+    Column(
+        modifier = Modifier
+            .fillMaxSize().padding(16.dp)
+    ) {
+        Text(assignment.title, fontSize = 28.sp, color = Black, style = BoldMontserrat36, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        HorizontalDivider()
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = { controller.popBackStack() }) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+            }
+            Spacer(Modifier.width(8.dp))
+            Text(assignment.topic, fontSize = 23.sp, fontWeight = FontWeight.Medium, style = BoldMontserrat36)
+        }
+        HorizontalDivider()
+
+        Spacer(Modifier.height(16.dp))
+        Text("Файл Д/З:", fontWeight = FontWeight.Bold, color = Purple40)
+        Spacer(Modifier.height(4.dp))
+        Text(assignment.description, fontSize = 14.sp)
+
+        Spacer(Modifier.height(16.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFF8D7DA), RoundedCornerShape(8.dp))
                 .padding(16.dp)
         ) {
-            Text(assignment.title, fontSize = 28.sp, color = Black, style = BoldMontserrat36, modifier = modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-            HorizontalDivider()
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { controller.popBackStack() }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                }
-                Spacer(modifier.width(8.dp))
-                Text(assignment.topic, fontSize = 23.sp, fontWeight = FontWeight.Medium, style = BoldMontserrat36)
-            }
-            HorizontalDivider()
-
-            Spacer(modifier.height(16.dp))
-            Text("Файл Д/З:", fontWeight = FontWeight.Bold, color = Purple40)
-            Spacer(modifier.height(4.dp))
-            Text(assignment.description, fontSize = 14.sp)
-
-            Spacer(modifier.height(16.dp))
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .background(Color(0xFFF8D7DA), RoundedCornerShape(8.dp))
-                    .padding(16.dp)
-            ) {
-                Column {
-                    Text("📎 Прикрепить решение:")
-                    fileName?.let {
-                        Spacer(modifier.height(8.dp))
-                        Text("📄 $it", color = Color.Green)
-                    }
+            Column {
+                Text("📎 Прикрепить решение:")
+                fileName?.let {
+                    Spacer(Modifier.height(8.dp))
+                    Text("📄 $it", color = Color.Green)
                 }
             }
+        }
 
-            if (isSubmitted) {
-                Spacer(modifier.height(16.dp))
-                controller.popBackStack("elements", inclusive = false)
-                Text("✅ Домашнее задание отправлено!", color = Color.Green)
-            }
+        if (isSubmitted) {
+            Spacer(Modifier.height(16.dp))
+            controller.popBackStack("elements", inclusive = false)
+            Text("✅ Домашнее задание отправлено!", color = Color.Green)
         }
         Button(
             onClick = { viewModel.submit() },
-            colors = ButtonDefaults.buttonColors(Color(0xFFD2F4D1)),
-            modifier = modifier.align(Alignment.BottomCenter)
+            colors = ButtonDefaults.buttonColors(Color(0xFFD2F4D1))
         ) {
             Text(stringResource(R.string.submit), color = Black)
         }

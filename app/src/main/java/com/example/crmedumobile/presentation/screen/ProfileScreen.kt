@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -33,11 +34,14 @@ import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat32
 import com.example.crmedumobile.presentation.theme.paddingButton
 import com.example.crmedumobile.presentation.theme.paddingMedium
 import com.example.crmedumobile.presentation.theme.paddingSmall
+import com.example.crmedumobile.presentation.viewmodel.SplashViewModel
 import com.example.crmedumobile.presentation.viewmodel.UserViewModel
 
 @Composable
-fun ProfileScreenTutor(
+fun ProfileScreen(
+    role: String,
     viewModel: UserViewModel = hiltViewModel(),
+    splashViewModel: SplashViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
     val userState by viewModel.userState.collectAsState()
@@ -54,17 +58,23 @@ fun ProfileScreenTutor(
         }
 
         is UserUiState.Success -> {
-            ProfileScreenTutorContent(
+            ProfileScreenContent(
+                role = role,
                 profileData = state.profile,
-                onToggleNotifications = { isEnabled ->
-                    println(isEnabled)
-                    viewModel.changeNotifyMode(isEnabled)
-                },
+                onToggleNotifications = { viewModel.changeNotifyMode(it) },
                 onLogout = {
                     viewModel.logout()
+                    splashViewModel.reset()
+                    splashViewModel.recalculateStartDestination()
                     navController.navigate("login") {
-                        popUpTo(0) { inclusive = true }
+                        popUpTo(navController.graph.startDestinationRoute ?: "login") {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
                     }
+                },
+                onNavigateToPayment = {
+                    navController.navigate("payment")
                 }
             )
         }
@@ -79,12 +89,13 @@ fun ProfileScreenTutor(
     }
 }
 
-
 @Composable
-fun ProfileScreenTutorContent(
+fun ProfileScreenContent(
+    role: String,
     profileData: ProfileData,
     onToggleNotifications: (Boolean) -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onNavigateToPayment: (() -> Unit)? = null
 ) {
     Column(
         modifier = Modifier
@@ -100,11 +111,7 @@ fun ProfileScreenTutorContent(
             color = Color.Black,
             modifier = Modifier.padding(bottom = paddingSmall)
         )
-        Divider(
-            color = DarkPurple,
-            thickness = 1.dp,
-            modifier = Modifier.fillMaxWidth()
-        )
+        HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = DarkPurple)
         Spacer(modifier = Modifier.height(paddingMedium))
 
         ProfileItem(
@@ -114,7 +121,7 @@ fun ProfileScreenTutorContent(
         )
         Spacer(modifier = Modifier.height(16.dp))
         ProfileItem(
-            label = "Фио",
+            label = "ФИО",
             value = profileData.fullName,
             modifier = Modifier.fillMaxWidth()
         )
@@ -129,25 +136,32 @@ fun ProfileScreenTutorContent(
 
         Spacer(modifier = Modifier.height(paddingButton))
 
-        LogoutButton(
-            onClick = onLogout,
-        )
+        if (role == "STUDENT" && onNavigateToPayment != null) {
+            Button(
+                onClick = onNavigateToPayment,
+                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
+            ) {
+                Text("Оплата")
+            }
+            Spacer(modifier = Modifier.height(paddingButton))
+        }
 
+        LogoutButton(onClick = onLogout)
         Spacer(modifier = Modifier.weight(1f))
-
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ProfileScreenTutorPreview() {
-    ProfileScreenTutorContent(
-        profileData = ProfileData(
-            role = "Преподаватель",
-            fullName = "Губанова Елена",
-            notifications = true
-        ),
-        onToggleNotifications = {},
-        onLogout = {}
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ProfileScreenStudentPreview() {
+//    ProfileScreenStudentContent(
+//        profileData = ProfileData(
+//            role = "Студент",
+//            fullName = "Губанова Елена",
+//            notifications = true
+//        ),
+//        onToggleNotifications = {},
+//        onLogout = {},
+//        onNavigate = {}
+//    )
+//}

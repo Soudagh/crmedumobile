@@ -33,5 +33,6 @@ fun LessonDto.toDomain(): Lesson = Lesson(
     startTime = startTime,
     endTime = endTime,
     date = date,
-    link = link
+    link = link,
+    color = color,
 )

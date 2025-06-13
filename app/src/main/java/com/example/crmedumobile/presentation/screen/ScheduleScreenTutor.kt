@@ -1,5 +1,6 @@
 package com.example.crmedumobile.presentation.screen
 
+import LocalDimensions
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,11 +15,14 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,25 +33,30 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.crmedumobile.R
+import com.example.crmedumobile.domain.model.ScheduleModel
 import com.example.crmedumobile.presentation.components.ScheduleTutorItem
-import com.example.crmedumobile.presentation.states.ScheduleItemData
-import com.example.crmedumobile.presentation.theme.CrmedumobileTheme
+import com.example.crmedumobile.presentation.states.ScheduleUiState
 import com.example.crmedumobile.presentation.theme.DarkPurple
 import com.example.crmedumobile.presentation.theme.RegularMontserrat16
 import com.example.crmedumobile.presentation.theme.RegularMontserrat24
 import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat32
-import com.example.crmedumobile.presentation.theme.SubjectColors
-import com.example.crmedumobile.presentation.theme.paddingMedium
-import com.example.crmedumobile.presentation.theme.paddingSmall
+import com.example.crmedumobile.presentation.viewmodel.ScheduleViewModel
+import java.time.LocalDate
 
 @Composable
 fun ScheduleScreenTutor(
-    controller: NavHostController,
-//    onNavigate: (Screen) -> Unit
+    navController: NavHostController,
+    viewModel: ScheduleViewModel = hiltViewModel()
 ) {
-    var selectedDay by remember { mutableStateOf(0) }
+    var lessons by remember { mutableStateOf(listOf<ScheduleModel>()) }
+    var today by remember { mutableStateOf(Pair("", "")) }
+    var selectedDay by remember { mutableIntStateOf(0) }
+
+    val scheduleState by viewModel.scheduleState.collectAsState()
+
     val daysOfWeek = listOf(
         "Понедельник" to "05.05.2025",
         "Вторник" to "06.05.2025",
@@ -58,71 +67,87 @@ fun ScheduleScreenTutor(
         "Воскресенье" to "11.05.2025"
     )
 
-    val subjectsProvider: (Int) -> List<ScheduleItemData> = { dayIndex ->
-        when (dayIndex) {
-            5, 6 -> emptyList()
-            else -> listOf(
-                ScheduleItemData(
-                    "10:00",
-                    "Математика",
-                    "Индивидуальное",
-                    "Иванов",
-                    SubjectColors[0]
-                ),
-                ScheduleItemData("11:30", "Физика", "Групповое", "СУ-303", SubjectColors[1]),
-                ScheduleItemData("13:00", "Химия", "Индивидуальное", "Петрова", SubjectColors[2]),
-                ScheduleItemData(
-                    "14:30",
-                    "Биология",
-                    "Групповое",
-                    "МатПрофиль 2.1",
-                    SubjectColors[3]
-                ),
-                ScheduleItemData(
-                    "16:00",
-                    "Информатика",
-                    "Индивидуальное",
-                    "Сидоров",
-                    SubjectColors[4]
-                ),
-                ScheduleItemData(
-                    "16:00",
-                    "Информатика",
-                    "Индивидуальное",
-                    "Сидоров",
-                    SubjectColors[4]
+    LaunchedEffect(Unit) {
+        viewModel.loadSchedule(mode = "TUTOR")
+    }
+
+    LaunchedEffect(scheduleState) {
+        when (val state = scheduleState) {
+            is ScheduleUiState.Success -> {
+                lessons = state.schedule
+                val now = LocalDate.now()
+                today = Pair(
+                    now.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase),
+                    now.toString()
                 )
-            )
+            }
+
+            is ScheduleUiState.Error -> {
+                println("Ошибка: ${state.message}")
+            }
+
+            else -> {}
         }
     }
 
+    ScheduleScreenTutorContent(
+        lessons = lessons,
+        today = today,
+        daysOfWeek = daysOfWeek,
+        selectedDay = selectedDay,
+        onDayChange = { selectedDay = it },
+        lessonInfoClick = { navController.navigate("lesson/${it}") }
+    )
+}
+
+@Composable
+fun ScheduleScreenTutorContent(
+    modifier: Modifier = Modifier,
+    lessons: List<ScheduleModel>,
+    today: Pair<String, String>,
+    daysOfWeek: List<Pair<String, String>>,
+    selectedDay: Int,
+    onDayChange: (Int) -> Unit,
+    lessonInfoClick: (Long) -> Unit,
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color.White)
             .safeDrawingPadding()
-            .padding(horizontal = paddingMedium)
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = LocalDimensions.current.horizontalMedium),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Расписание",
+                style = SemiBoldMontserrat32,
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = LocalDimensions.current.verticalSmall)
+            )
+        }
+
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = 1.dp,
+            color = DarkPurple
+        )
+
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = LocalDimensions.current.horizontalMedium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Text(
-                    text = "Расписание",
-                    style = SemiBoldMontserrat32,
-                    color = Color.Black,
-                    modifier = Modifier.padding(bottom = paddingSmall)
-                )
-                Divider(
-                    color = DarkPurple,
-                    thickness = 1.dp,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(paddingMedium))
-
+                Spacer(modifier = Modifier.height(LocalDimensions.current.verticalMedium))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -135,13 +160,11 @@ fun ScheduleScreenTutor(
                         modifier = Modifier
                             .size(32.dp)
                             .clickable {
-                                if (selectedDay > 0) selectedDay--
+                                if (selectedDay > 0) onDayChange(selectedDay - 1)
                             }
                     )
 
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = daysOfWeek[selectedDay].first,
                             style = RegularMontserrat24,
@@ -163,45 +186,82 @@ fun ScheduleScreenTutor(
                         modifier = Modifier
                             .size(32.dp)
                             .clickable {
-                                if (selectedDay < daysOfWeek.size - 1) selectedDay++
+                                if (selectedDay < daysOfWeek.size - 1) onDayChange(selectedDay + 1)
                             }
                     )
                 }
 
-                Spacer(modifier = Modifier.height(paddingMedium))
+                Spacer(modifier = Modifier.height(LocalDimensions.current.verticalMedium))
             }
 
-            val subjects = subjectsProvider(selectedDay)
-            if (subjects.isEmpty()) {
+            if (lessons.isEmpty()) {
                 item {
                     Text(
                         text = "Нет занятий",
                         style = RegularMontserrat24,
                         color = Color.Black,
-                        modifier = Modifier.padding(top = paddingMedium)
+                        modifier = Modifier.padding(top = LocalDimensions.current.verticalMedium)
                     )
                 }
             } else {
-                items(subjects) { subject ->
+                items(lessons) { lesson ->
                     ScheduleTutorItem(
-                        time = subject.time,
-                        name = subject.name,
-                        type = subject.type,
-                        participant = subject.participant,
-                        color = subject.color
+                        item = lesson,
+                        lessonInfoClick = { lessonInfoClick(lesson.id!!) },
+                        modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
-
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
-fun ScheduleScreenTutorPreview() {
-    CrmedumobileTheme {
-//        ScheduleScreenStudent(onNavigate = {})
-    }
+fun ScheduleScreenTutorContentPreview() {
+    val dummyLessons = listOf(
+        ScheduleModel(
+            id = 1,
+            time = "09:00 – 10:30",
+            name = "Физика",
+            type = "Групповое",
+            participant = "Группа С",
+            teacher = "Кузнецов В.В.",
+            color = "#FF8A65",
+            date = "05.05.2025T09:00:00",
+            attendanceStatus = "Присутствовал",
+        ),
+        ScheduleModel(
+            id = 2,
+            time = "11:00 – 12:30",
+            name = "Информатика",
+            type = "Индивидуальное",
+            participant = "Сидорова М.М.",
+            teacher = "Кузнецов В.В.",
+            color = "#4DB6AC",
+            date = "05.05.2025T11:00:00",
+            attendanceStatus = "Отсутствовал",
+        )
+    )
+
+    val daysOfWeek = listOf(
+        "Понедельник" to "05.05.2025",
+        "Вторник" to "06.05.2025",
+        "Среда" to "07.05.2025",
+        "Четверг" to "08.05.2025",
+        "Пятница" to "09.05.2025",
+        "Суббота" to "10.05.2025",
+        "Воскресенье" to "11.05.2025"
+    )
+
+    ScheduleScreenTutorContent(
+        lessons = dummyLessons,
+        today = daysOfWeek[0],
+        selectedDay = 0,
+        onDayChange = {},
+        daysOfWeek = daysOfWeek,
+        lessonInfoClick = {}
+    )
 }

@@ -40,9 +40,12 @@ fun RootNavGraph(
     ) {
         composable("login") {
             LoginScreen(
-                onLoginSuccess = {
-                    navController.navigate("student_nav") {
+                onLoginSuccess = { role ->
+                    val route = if (role == "TUTOR") "tutor_nav" else "student_nav"
+                    splashViewModel.recalculateStartDestination()
+                    navController.navigate(route) {
                         popUpTo("login") { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
             )
@@ -55,6 +58,7 @@ fun RootNavGraph(
             composable("student_home") {
                 HomeScreenStudent(navController)
             }
+            studentNavGraph(navController)
         }
 
         navigation(
@@ -64,6 +68,7 @@ fun RootNavGraph(
             composable("tutor_home") {
                 HomeScreenTutor(navController)
             }
+            tutorNavGraph(navController)
         }
     }
 }

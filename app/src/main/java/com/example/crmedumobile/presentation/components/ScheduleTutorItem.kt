@@ -3,14 +3,24 @@ package com.example.crmedumobile.presentation.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,19 +29,17 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
+import com.example.crmedumobile.domain.model.ScheduleModel
 import com.example.crmedumobile.presentation.theme.BoldMontserrat16
 import com.example.crmedumobile.presentation.theme.RegularMontserrat16
 import com.example.crmedumobile.presentation.theme.RegularMontserrat24
 
 @Composable
 fun ScheduleTutorItem(
-    time: String,
-    name: String,
-    type: String,
-    participant: String,
-    color: Color,
+    item: ScheduleModel,
+    lessonInfoClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
-    onEditClick: () -> Unit = {}
 ) {
     var isAnimating by remember { mutableStateOf(false) }
 
@@ -45,11 +53,19 @@ fun ScheduleTutorItem(
         animationSpec = tween(durationMillis = 300)
     )
 
+    val borderColor = when (item.attendanceStatus) {
+        "Отсутствовал" -> Color.Red
+        "Присутствовал" -> Color.Green
+        "Уваж. причина" -> Color.Blue
+        else -> Color.Transparent
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
-            .background(color)
+            .border(2.dp, borderColor, RoundedCornerShape(18.dp))
+            .background(Color(item.color!!.toColorInt()))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -58,17 +74,17 @@ fun ScheduleTutorItem(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "$time $name",
+                text = "${item.time} ${item.name}",
                 style = RegularMontserrat24,
                 color = Color.Black
             )
             Text(
-                text = type,
+                text = item.type.toString(),
                 style = RegularMontserrat16,
                 color = Color.Black
             )
             Text(
-                text = participant,
+                text = item.participant.toString(),
                 style = BoldMontserrat16,
                 color = Color.Black
             )
@@ -84,8 +100,7 @@ fun ScheduleTutorItem(
                 .rotate(rotation)
                 .clickable {
                     isAnimating = true
-                    // TODO: Реализовать изменение расписания
-                    onEditClick()
+                    lessonInfoClick(item.id!!)
                 }
         )
     }
@@ -93,13 +108,17 @@ fun ScheduleTutorItem(
 
 @Preview(showBackground = true)
 @Composable
-fun ScheduleTutorItemPreview() {
+fun ScheduleItemTutorPreview() {
     ScheduleTutorItem(
-        time = "10:00",
-        name = "Математика",
-        type = "Индивидуальное",
-        participant = "Иванов",
-        color = Color(0xFFBBDEFB),
-        onEditClick = {}
+        item = ScheduleModel(
+            time = "10:00",
+            name = "Математика",
+            type = "Индивидуальное",
+            participant = "Иванов",
+            color = "0xFFBBDEFB",
+            date = "2025-05-05T10:00:00Z",
+            attendanceStatus = "Присутствовал"
+        ),
+        lessonInfoClick = {}
     )
 }

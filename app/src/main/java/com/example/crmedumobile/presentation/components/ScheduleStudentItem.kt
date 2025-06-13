@@ -59,7 +59,7 @@ fun ScheduleStudentItem(modifier: Modifier = Modifier, item: ScheduleModel) {
                     fontSize = 10.sp
                 )
                 Text(
-                    item.science,
+                    item.name,
                     color = Black,
                     fontSize = 16.sp,
                     fontFamily = CrmEduMontserrat,
@@ -68,18 +68,13 @@ fun ScheduleStudentItem(modifier: Modifier = Modifier, item: ScheduleModel) {
                 )
             }
             Row {
-                Text(item.group, fontFamily = CrmEduMontserrat, fontWeight = FontWeight.Thin)
+                Text(item.participant, fontFamily = CrmEduMontserrat, fontWeight = FontWeight.Thin)
                 Icon(painterResource(R.drawable.ic_video_call), null, tint = Purple40)
             }
-            Text(
-                String.format(context.getString(R.string.theme), item.theme),
-                fontFamily = CrmEduMontserrat,
-                fontWeight = FontWeight.Thin
-            )
-            Text(item.teacher, fontFamily = CrmEduMontserrat, fontWeight = FontWeight.Thin)
+            Text(item.teacher!!, fontFamily = CrmEduMontserrat, fontWeight = FontWeight.Thin)
             Box(modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd) {
                 Text(stringResource(R.string.link), modifier.clickable {
-                    val intent = Intent(Intent.ACTION_VIEW, item.link.toUri())
+                    val intent = Intent(Intent.ACTION_VIEW, item.link?.toUri())
                     context.startActivity(intent)
                 }, color = colorResource(R.color.linkColor))
             }

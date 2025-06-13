@@ -9,14 +9,13 @@ import com.example.crmedumobile.domain.model.enums.StatusScience
 import com.example.crmedumobile.presentation.state.TheoryUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TheoryViewModel @Inject constructor(): ViewModel(){
+class TheoryViewModel @Inject constructor() : ViewModel() {
     private val list = listOf(
         ScienceModel(
             "Пифагоровы тройки",
@@ -41,7 +40,7 @@ class TheoryViewModel @Inject constructor(): ViewModel(){
     )
     private val _uiState = MutableStateFlow<TheoryUiState>(TheoryUiState.Init)
     val uiState = _uiState.asStateFlow()
-    fun getTheory(id:Int){
+    fun getTheory(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = TheoryUiState.Loading
             _uiState.value = TheoryUiState.Success(

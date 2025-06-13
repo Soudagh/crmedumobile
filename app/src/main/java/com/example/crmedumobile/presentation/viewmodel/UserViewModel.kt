@@ -62,4 +62,9 @@ class UserViewModel @Inject constructor(
     fun logout() {
         logoutUseCase()
     }
+
+    fun resetUserState() {
+        _userState.value = UserUiState.Idle
+    }
+
 }

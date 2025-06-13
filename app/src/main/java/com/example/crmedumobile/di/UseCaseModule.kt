@@ -8,6 +8,7 @@ import com.example.crmedumobile.domain.usecase.ChangeNotifyModeUseCase
 import com.example.crmedumobile.domain.usecase.GetNotificationsUseCase
 import com.example.crmedumobile.domain.usecase.GetProfileUseCase
 import com.example.crmedumobile.domain.usecase.GetScheduleUseCase
+import com.example.crmedumobile.domain.usecase.GetUserRoleUseCase
 import com.example.crmedumobile.domain.usecase.LogOutUseCase
 import com.example.crmedumobile.domain.usecase.LoginUseCase
 import dagger.Module
@@ -46,4 +47,8 @@ object UseCaseModule {
     @Provides
     fun getNotificationsUseCase(notificationRepository: NotificationRepository): GetNotificationsUseCase =
         GetNotificationsUseCase(notificationRepository)
+
+    @Provides
+    fun getRoleUseCase(authRepository: AuthRepository): GetUserRoleUseCase =
+        GetUserRoleUseCase(authRepository)
 }

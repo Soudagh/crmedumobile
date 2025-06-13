@@ -11,7 +11,7 @@ import com.example.crmedumobile.presentation.screen.HomeWorkScreen
 import com.example.crmedumobile.presentation.screen.NotificationScreen
 import com.example.crmedumobile.presentation.screen.PaymentScreen
 import com.example.crmedumobile.presentation.screen.PaymentSubjectScreen
-import com.example.crmedumobile.presentation.screen.ProfileScreenStudent
+import com.example.crmedumobile.presentation.screen.ProfileScreen
 import com.example.crmedumobile.presentation.screen.ScheduleScreenStudent
 import com.example.crmedumobile.presentation.screen.ScienceScreen
 import com.example.crmedumobile.presentation.screen.TheoryScreen
@@ -30,7 +30,7 @@ fun NavGraphBuilder.studentNavGraph(controller: NavHostController) {
         ScheduleScreenStudent(controller = controller)
     }
     composable("profile") {
-        ProfileScreenStudent(navController = controller)
+        ProfileScreen("STUDENT", navController = controller)
     }
     composable("theory/{id}", arguments = listOf(navArgument("id") { type = NavType.IntType })) {
         TheoryScreen(controller = controller, backStackEntry = it)

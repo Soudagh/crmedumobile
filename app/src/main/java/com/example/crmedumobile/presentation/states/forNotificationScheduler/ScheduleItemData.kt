@@ -1,18 +1,12 @@
 package com.example.crmedumobile.presentation.states.forNotificationScheduler
 
-import androidx.compose.ui.graphics.Color
-import kotlinx.serialization.Serializable
-
-
-@Serializable
 data class ScheduleItemData(
-    val id: String,
+    val id: Long,
     val time: String,
     val name: String,
     val type: String,
     val participant: String,
-    @Serializable(with = ColorSerializer::class)
-    val color: Color,
+    val color: String,
     val dateTime: String,
     val attendanceStatus: String = "Присутствовал"
 )

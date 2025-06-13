@@ -4,11 +4,25 @@ import LocalDimensions
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,15 +31,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.crmedumobile.R
-import com.example.crmedumobile.presentation.components.BottomTabBar
 import com.example.crmedumobile.presentation.components.HomeworkItemCard
-import com.example.crmedumobile.presentation.states.Screen
-import com.example.crmedumobile.presentation.theme.*
+import com.example.crmedumobile.presentation.theme.CrmedumobileTheme
+import com.example.crmedumobile.presentation.theme.DarkPurple
+import com.example.crmedumobile.presentation.theme.Gray
+import com.example.crmedumobile.presentation.theme.RegularMontserrat16
+import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat32
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class HomeworkItem(
+    val id: Long,
     val studentName: String,
     val topic: String,
     val status: String
@@ -33,14 +51,13 @@ data class HomeworkItem(
 
 @Composable
 fun CheckHomeworkScreen(
-    onNavigate: (Screen) -> Unit,
-    onBack: () -> Unit,
-    onHomeworkSelected: (HomeworkItem) -> Unit
+    navController: NavHostController,
+    onBack: () -> Unit = {},
 ) {
     val homeworkItems = listOf(
-        HomeworkItem("Кирилл Рогачёв", "Подобные треугольники", "Непроверено"),
-        HomeworkItem("Анна Смирнова", "Квадратные уравнения", "Проверено"),
-        HomeworkItem("Иван Петров", "Векторы", "Непроверено")
+        HomeworkItem(1, "Кирилл Рогачёв", "Подобные треугольники", "Непроверено"),
+        HomeworkItem(2, "Анна Смирнова", "Квадратные уравнения", "Проверено"),
+        HomeworkItem(3, "Иван Петров", "Векторы", "Непроверено")
     )
 
     Column(
@@ -66,10 +83,10 @@ fun CheckHomeworkScreen(
                     .padding(bottom = LocalDimensions.current.verticalSmall)
             )
         }
-        Divider(
-            color = DarkPurple,
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
             thickness = 1.dp,
-            modifier = Modifier.fillMaxWidth()
+            color = DarkPurple
         )
 
 
@@ -131,10 +148,10 @@ fun CheckHomeworkScreen(
         }
 
 
-        Divider(
-            color = DarkPurple,
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
             thickness = 1.dp,
-            modifier = Modifier.fillMaxWidth()
+            color = DarkPurple
         )
         Spacer(modifier = Modifier.height(LocalDimensions.current.verticalSmall))
 
@@ -149,17 +166,14 @@ fun CheckHomeworkScreen(
             items(homeworkItems) { item ->
                 HomeworkItemCard(
                     item = item,
-                    onEditClick = { onHomeworkSelected(item) },
+                    onEditClick = {
+                        navController.navigate("homework/${item.id}")
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
-
-        BottomTabBar(
-            selectedScreen = Screen.NOTES,
-            onScreenSelected = onNavigate
-        )
     }
 }
 
@@ -167,10 +181,9 @@ fun CheckHomeworkScreen(
 @Composable
 private fun CheckHomeworkScreenPreview() {
     CrmedumobileTheme {
-        CheckHomeworkScreen(
-            onNavigate = {},
-            onBack = {},
-            onHomeworkSelected = {}
-        )
+//        CheckHomeworkScreen(
+//            onBack = {},
+//            onHomeworkSelected = {}
+//        )
     }
 }

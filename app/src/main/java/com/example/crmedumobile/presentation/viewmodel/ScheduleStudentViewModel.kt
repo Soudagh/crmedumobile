@@ -22,16 +22,18 @@ class ScheduleStudentViewModel @Inject constructor(): ViewModel() {
     fun getSchedule(){
         val list = mutableListOf<ScheduleModel>()
         viewModelScope.launch(Dispatchers.IO) {
-            //for loading screen
             _state.value = ScheduleState.Loading
             for (i in 1 until 20){
                 list.add(ScheduleModel(
+                    1L,
                     "13:00",
                     "Информатика",
                     "Групповое",
                     "ПОУ Программирование $i",
                     "Иванов Иван Иванович",
-                    "https://www.youtube.com/watch?v=BmbM5B4NjxY"
+                    "https://www.youtube.com/watch?v=BmbM5B4NjxY",
+                    "asfsa",
+                    "asfsaf"
                 ))
             }
             _state.value = ScheduleState.Success(

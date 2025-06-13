@@ -13,13 +13,27 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,19 +43,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.example.crmedumobile.R
-import com.example.crmedumobile.presentation.components.BottomTabBar
-import com.example.crmedumobile.presentation.states.Screen
+import com.example.crmedumobile.domain.model.ScheduleModel
 import com.example.crmedumobile.presentation.states.forNotificationScheduler.NotificationPrefs
 import com.example.crmedumobile.presentation.states.forNotificationScheduler.NotificationScheduler
-import com.example.crmedumobile.presentation.states.forNotificationScheduler.ScheduleItemData
-import com.example.crmedumobile.presentation.theme.*
+import com.example.crmedumobile.presentation.theme.DarkPurple
+import com.example.crmedumobile.presentation.theme.RegularMontserrat16
+import com.example.crmedumobile.presentation.theme.RegularMontserrat20
+import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat32
+import com.example.crmedumobile.presentation.theme.SubjectColors
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun NotificationsScreen(
-    onNavigate: (Screen) -> Unit,
     notificationPrefs: NotificationPrefs = NotificationPrefs(LocalContext.current),
     notificationScheduler: NotificationScheduler = NotificationScheduler(LocalContext.current)
 ) {
@@ -66,7 +81,6 @@ fun NotificationsScreen(
     }
     var showPermissionWarning by remember { mutableStateOf(false) }
 
-    // Лаунчер для запроса POST_NOTIFICATIONS
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -75,7 +89,6 @@ fun NotificationsScreen(
         println("POST_NOTIFICATIONS permission result: $isGranted")
     }
 
-    // Запрос разрешений при запуске
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !hasNotificationPermission) {
             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -87,32 +100,29 @@ fun NotificationsScreen(
     }
 
     val lessons = listOf(
-        ScheduleItemData(
-            id = "1",
+        ScheduleModel(
             time = "16:10",
             name = "Математика",
             type = "Индивидуальное",
             participant = "Иванов",
-            color = SubjectColors[0],
-            dateTime = "2025-05-31T16:10:00Z" // ~20 минут от текущего времени
+            color = SubjectColors[0].toString(),
+            date = "2025-05-31T16:10:00Z"
         ),
-        ScheduleItemData(
-            id = "2",
+        ScheduleModel(
             time = "16:20",
             name = "Физика",
             type = "Групповое",
             participant = "СУ-303",
-            color = SubjectColors[1],
-            dateTime = "2025-05-31T16:20:00Z"
+            color = SubjectColors[1].toString(),
+            date = "2025-05-31T16:20:00Z"
         ),
-        ScheduleItemData(
-            id = "3",
+        ScheduleModel(
             time = "16:30",
             name = "Химия",
             type = "Индивидуальное",
             participant = "Петрова",
-            color = SubjectColors[2],
-            dateTime = "2025-05-31T16:30:00Z"
+            color = SubjectColors[2].toString(),
+            date = "2025-05-31T16:30:00Z"
         )
     )
 
@@ -120,10 +130,14 @@ fun NotificationsScreen(
     if (hasNotificationPermission && canScheduleExactAlarms) {
         LaunchedEffect(Unit) {
             lessons.forEach { lesson ->
-                if (notificationPrefs.isNotificationEnabled(lesson.id)) {
-                    val dateTime = Instant.parse(lesson.dateTime)
+                if (notificationPrefs.isNotificationEnabled(lesson.id.toString())) {
+                    val dateTime = Instant.parse(lesson.date)
                         .toLocalDateTime(TimeZone.currentSystemDefault())
-                    notificationScheduler.scheduleNotification(lesson.id, lesson.name, dateTime)
+                    notificationScheduler.scheduleNotification(
+                        lesson.id.toString(),
+                        lesson.name,
+                        dateTime
+                    )
                 }
             }
         }
@@ -171,7 +185,7 @@ fun NotificationsScreen(
             item { Spacer(modifier = Modifier.height(LocalDimensions.current.verticalSmall)) }
             items(lessons) { lesson ->
                 var isNotificationEnabled by remember(lesson.id) {
-                    mutableStateOf(notificationPrefs.isNotificationEnabled(lesson.id))
+                    mutableStateOf(notificationPrefs.isNotificationEnabled(lesson.id.toString()))
                 }
 
                 Row(
@@ -188,7 +202,8 @@ fun NotificationsScreen(
                             color = Color.Black
                         )
                         Text(
-                            text = lesson.dateTime.substringBefore("T").replace("-", ".") + " ${lesson.time}",
+                            text = lesson.date.substringBefore("T")
+                                .replace("-", ".") + " ${lesson.time}",
                             style = RegularMontserrat16,
                             color = Color.Black
                         )
@@ -204,15 +219,22 @@ fun NotificationsScreen(
                             .clickable {
                                 println("Clicked notification icon for lesson id=${lesson.id}, current state=$isNotificationEnabled")
                                 isNotificationEnabled = !isNotificationEnabled
-                                notificationPrefs.setNotificationEnabled(lesson.id, isNotificationEnabled)
+                                notificationPrefs.setNotificationEnabled(
+                                    lesson.id.toString(),
+                                    isNotificationEnabled
+                                )
                                 println("New notification state for id=${lesson.id}: $isNotificationEnabled")
                                 if (hasNotificationPermission && canScheduleExactAlarms) {
                                     if (isNotificationEnabled) {
-                                        val dateTime = Instant.parse(lesson.dateTime)
+                                        val dateTime = Instant.parse(lesson.date)
                                             .toLocalDateTime(TimeZone.currentSystemDefault())
-                                        notificationScheduler.scheduleNotification(lesson.id, lesson.name, dateTime)
+                                        notificationScheduler.scheduleNotification(
+                                            lesson.id.toString(),
+                                            lesson.name,
+                                            dateTime
+                                        )
                                     } else {
-                                        notificationScheduler.cancelNotification(lesson.id)
+                                        notificationScheduler.cancelNotification(lesson.id.toString())
                                     }
                                 } else {
                                     showPermissionWarning = true
@@ -224,12 +246,6 @@ fun NotificationsScreen(
                 Divider(color = DarkPurple.copy(alpha = 0.2f), thickness = 0.5.dp)
             }
         }
-
-
-        BottomTabBar(
-            selectedScreen = Screen.NOTIFICATIONS,
-            onScreenSelected = onNavigate
-        )
     }
 }
 

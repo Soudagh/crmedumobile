@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.example.crmedumobile.presentation.components.BottomTabBar
+import com.example.crmedumobile.presentation.components.BottomNavigationBar
 import com.example.crmedumobile.presentation.navigation.tutorNavGraph
 
 @Composable
@@ -16,7 +16,7 @@ fun HomeScreenTutor(navHostController: NavHostController) {
 
     Scaffold(
         bottomBar = {
-            BottomTabBar(
+            BottomNavigationBar(
                 controller = innerNavController
             )
         }

@@ -34,28 +34,27 @@ import com.example.crmedumobile.presentation.components.ScheduleStudentItem
 import com.example.crmedumobile.presentation.states.ScheduleUiState
 import com.example.crmedumobile.presentation.theme.BoldMontserrat36
 import com.example.crmedumobile.presentation.theme.Purple40
-import com.example.crmedumobile.presentation.viewmodel.ScheduleStudentViewModel
+import com.example.crmedumobile.presentation.viewmodel.ScheduleViewModel
 import java.time.LocalDate
 
 @Composable
 fun ScheduleScreenStudent(
     controller: NavHostController,
-    viewModel: ScheduleStudentViewModel = hiltViewModel()
+    viewModel: ScheduleViewModel = hiltViewModel()
 ) {
-    val scheduleState by viewModel.getSchedule()
-    var list by remember { mutableStateOf(listOf<ScheduleModel>()) }
+    val scheduleState by viewModel.scheduleState.collectAsState()
+    var lessons by remember { mutableStateOf(listOf<ScheduleModel>()) }
     var today by remember { mutableStateOf(Pair("", "")) }
 
     LaunchedEffect(Unit) {
-        viewModel.loadSchedule()
+        viewModel.loadSchedule(mode = "STUDENT")
     }
 
     LaunchedEffect(scheduleState) {
         when (val state = scheduleState) {
             is ScheduleUiState.Success -> {
-                list = state.schedule
+                lessons = state.schedule
                 val now = LocalDate.now()
-                val todayLessons = list.filter { LocalDate.parse(it.date) == now }
                 today = Pair(
                     now.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase),
                     now.toString()
@@ -70,13 +69,13 @@ fun ScheduleScreenStudent(
         }
     }
 
-    ScheduleScreenStudentContent(list = list, today = today)
+    ScheduleScreenStudentContent(lessons = lessons, today = today)
 }
 
 @Composable
 fun ScheduleScreenStudentContent(
     modifier: Modifier = Modifier,
-    list: List<ScheduleModel>,
+    lessons: List<ScheduleModel>,
     today: Pair<String, String>
 ) {
     Column(
@@ -116,7 +115,7 @@ fun ScheduleScreenStudentContent(
         }
         HorizontalDivider()
         LazyColumn(modifier = modifier.fillMaxSize()) {
-            itemsIndexed(list) { _, item ->
+            itemsIndexed(lessons) { _, item ->
                 ScheduleStudentItem(item = item)
             }
 
@@ -130,24 +129,24 @@ fun ScheduleScreenStudentPreview() {
     val dummyLessons = listOf(
         ScheduleModel(
             time = "10:00 – 11:30",
-            science = "Math",
-            group = "Group A",
-            theme = "Algebra Basics",
+            name = "Math",
+            participant = "Group A",
             teacher = "Mr. Smith",
-            link = "https://zoom.us/lesson/123"
+            link = "https://zoom.us/lesson/123",
+            date = ""
         ),
         ScheduleModel(
             time = "12:00 – 13:30",
-            science = "History",
-            group = "Group B",
-            theme = "WWII Overview",
+            name = "History",
+            participant = "Group B",
             teacher = "Ms. Johnson",
-            link = "https://zoom.us/lesson/456"
+            link = "https://zoom.us/lesson/456",
+            date = ""
         )
     )
 
     ScheduleScreenStudentContent(
-        list = dummyLessons,
+        lessons = dummyLessons,
         today = Pair("Monday", "2025-05-26")
     )
 }

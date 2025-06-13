@@ -14,5 +14,6 @@ data class LessonDto(
     val startTime: ZonedDateTime,
     val endTime: ZonedDateTime,
     val date: LocalDate,
-    val link: String
+    val link: String,
+    val color: String,
 )

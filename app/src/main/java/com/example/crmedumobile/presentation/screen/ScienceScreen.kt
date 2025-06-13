@@ -40,36 +40,96 @@ import com.example.crmedumobile.presentation.theme.BoldMontserrat36
 import com.example.crmedumobile.presentation.viewmodel.ScienceViewModel
 
 @Composable
-fun ScienceScreen(modifier: Modifier = Modifier, controller: NavHostController, backStackEntry: NavBackStackEntry) {
+fun ScienceScreen(
+    modifier: Modifier = Modifier,
+    controller: NavHostController,
+    backStackEntry: NavBackStackEntry
+) {
     val id = backStackEntry.arguments?.getInt("id", 0) ?: 0
     val viewModel = hiltViewModel<ScienceViewModel>()
     viewModel.findElement(id)
     var science by remember { mutableStateOf("") }
     var list by remember { mutableStateOf(listOf<ScienceModel>()) }
     Column(modifier.fillMaxSize()) {
-        Text(stringResource(R.string.homeWork), fontSize = 28.sp, color = Black, style = BoldMontserrat36, modifier = modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        Text(
+            stringResource(R.string.homeWork),
+            fontSize = 28.sp,
+            color = Black,
+            style = BoldMontserrat36,
+            modifier = modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
         HorizontalDivider()
-        Text(science, fontSize = 19.sp, color = Black, style = BoldMontserrat36, modifier = modifier.fillMaxWidth().padding(10.dp), textAlign = TextAlign.Center)
+        Text(
+            science,
+            fontSize = 19.sp,
+            color = Black,
+            style = BoldMontserrat36,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            textAlign = TextAlign.Center
+        )
         HorizontalDivider()
         LazyColumn {
-            itemsIndexed(list)  {index, item ->
-                Card(modifier = modifier.fillMaxWidth().padding(10.dp, vertical = 5.dp), shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(
-                    colorResource(R.color.itemBackgroundColor)
-                )) {
+            itemsIndexed(list) { index, item ->
+                Card(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(10.dp, vertical = 5.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(
+                        colorResource(R.color.itemBackgroundColor)
+                    )
+                ) {
                     Row(modifier.fillMaxWidth()) {
-                        Column(modifier.fillMaxWidth().weight(10f)) {
-                            Text(item.theme, fontSize = 16.sp, color = Black, style = BoldMontserrat36, modifier = modifier.padding(10.dp))
-                            Text(String.format(stringResource(R.string.validate), item.validate), fontSize = 16.sp, color = Black, style = BoldMontserrat36, modifier = modifier.padding(10.dp))
+                        Column(modifier
+                            .fillMaxWidth()
+                            .weight(10f)) {
+                            Text(
+                                item.theme,
+                                fontSize = 16.sp,
+                                color = Black,
+                                style = BoldMontserrat36,
+                                modifier = modifier.padding(10.dp)
+                            )
+                            Text(
+                                String.format(stringResource(R.string.validate), item.validate),
+                                fontSize = 16.sp,
+                                color = Black,
+                                style = BoldMontserrat36,
+                                modifier = modifier.padding(10.dp)
+                            )
                             Row(modifier = modifier.padding(10.dp)) {
-                                Text(stringResource(R.string.status), fontSize = 16.sp, color = Black, style = BoldMontserrat36)
-                                Text(if (item.status.ordinal == 0) stringResource(R.string.passed) else stringResource(R.string.failed), fontSize = 16.sp, color = if (item.status.ordinal == 0) colorResource(R.color.green) else colorResource(R.color.red), style = BoldMontserrat36)
+                                Text(
+                                    stringResource(R.string.status),
+                                    fontSize = 16.sp,
+                                    color = Black,
+                                    style = BoldMontserrat36
+                                )
+                                Text(
+                                    if (item.status.ordinal == 0) stringResource(R.string.passed) else stringResource(
+                                        R.string.failed
+                                    ),
+                                    fontSize = 16.sp,
+                                    color = if (item.status.ordinal == 0) colorResource(R.color.green) else colorResource(
+                                        R.color.red
+                                    ),
+                                    style = BoldMontserrat36
+                                )
                             }
                         }
-                        if (item.status.ordinal == 1){
+                        if (item.status.ordinal == 1) {
                             IconButton(onClick = {
                                 controller.navigate("theory/${index}")
-                            }, modifier = modifier.weight(2f).align(Alignment.CenterVertically)) {
-                                Icon(painter = painterResource(R.drawable.ic_edit), null, tint = Black)
+                            }, modifier = modifier
+                                .weight(2f)
+                                .align(Alignment.CenterVertically)) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_edit),
+                                    null,
+                                    tint = Black
+                                )
                             }
                         }
                     }
@@ -84,9 +144,11 @@ fun ScienceScreen(modifier: Modifier = Modifier, controller: NavHostController, 
                     science = it.science
                     list = it.data
                 }
-                is ScienceState.Error->{
+
+                is ScienceState.Error -> {
                     print("Error: ${it.message}")
                 }
+
                 else -> {}
             }
         }

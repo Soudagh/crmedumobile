@@ -3,10 +3,17 @@ package com.example.crmedumobile.presentation.screen
 import LocalDimensions
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,14 +22,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.crmedumobile.presentation.components.BottomTabBar
-import com.example.crmedumobile.presentation.states.Screen
-import com.example.crmedumobile.presentation.theme.*
+import androidx.navigation.NavHostController
+import com.example.crmedumobile.presentation.theme.BoldMontserrat24
+import com.example.crmedumobile.presentation.theme.CrmedumobileTheme
+import com.example.crmedumobile.presentation.theme.DarkPurple
+import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat32
+import com.example.crmedumobile.presentation.theme.SubjectColors
 
 @Composable
-fun HomeWorkScreen(
-    onNavigate: (Screen) -> Unit,
-    onCheckHomeworkClick: () -> Unit
+fun HomeWorkScreenTutor(
+    controller: NavHostController,
 ) {
     Column(
         modifier = Modifier
@@ -47,10 +56,10 @@ fun HomeWorkScreen(
             )
         }
 
-        Divider(
-            color = DarkPurple,
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
             thickness = 1.dp,
-            modifier = Modifier.fillMaxWidth()
+            color = DarkPurple
         )
 
         Column(
@@ -63,7 +72,7 @@ fun HomeWorkScreen(
             Spacer(modifier = Modifier.height(LocalDimensions.current.verticalMedium))
 
             Button(
-                onClick = onCheckHomeworkClick,
+                onClick = { controller.navigate("check_homework") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp),
@@ -127,18 +136,13 @@ fun HomeWorkScreen(
 
             Spacer(modifier = Modifier.weight(1f))
         }
-
-        BottomTabBar(
-            selectedScreen = Screen.NOTES,
-            onScreenSelected = onNavigate
-        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun HomeWorkScreenPreview() {
+fun HomeWorkScreenTutorPreview() {
     CrmedumobileTheme {
-        HomeWorkScreen(onNavigate = {}, onCheckHomeworkClick = {})
+//        HomeWorkScreen(onNavigate = {}, onCheckHomeworkClick = {})
     }
 }

@@ -5,11 +5,34 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,11 +41,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.crmedumobile.R
-import com.example.crmedumobile.presentation.components.BottomTabBar
-import com.example.crmedumobile.presentation.states.Screen
-import com.example.crmedumobile.presentation.states.forNotificationScheduler.ScheduleItemData
-import com.example.crmedumobile.presentation.theme.*
+import com.example.crmedumobile.presentation.theme.DarkPurple
+import com.example.crmedumobile.presentation.theme.Gray
+import com.example.crmedumobile.presentation.theme.RegularMontserrat16
+import com.example.crmedumobile.presentation.theme.RegularMontserrat20
+import com.example.crmedumobile.presentation.theme.RegularMontserrat24
+import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat24
+import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat32
 
 data class Student(
     val name: String,
@@ -30,23 +57,21 @@ data class Student(
 )
 
 @Composable
-fun SubjectInfoScreen(
-    subject: ScheduleItemData,
-    onNavigate: (Screen) -> Unit,
-    onEditClick: (ScheduleItemData) -> Unit = {}
+fun LessonInfoScreenTutor(
+    navController: NavHostController,
 ) {
     val students = remember {
         mutableStateListOf(
-            Student("Осыкин Данил Юрьевич", subject.attendanceStatus),
-            Student("Иванова Анна Сергеевна", subject.attendanceStatus),
-            Student("Петров Михаил Александрович", subject.attendanceStatus)
+            Student("Осыкин Данил Юрьевич", "Отсутствовал"),
+            Student("Иванова Анна Сергеевна", "subject.attendanceStatus"),
+            Student("Петров Михаил Александрович", "subject.attendanceStatus")
         )
     }
 
 
-    LaunchedEffect(Unit) {
-        onEditClick(subject)
-    }
+//    LaunchedEffect(Unit) {
+//        onEditClick(subject)
+//    }
 
     var meetingLink by remember { mutableStateOf("https://meet.google.com/abc-123") }
     var showLinkDialog by remember { mutableStateOf(false) }
@@ -94,7 +119,7 @@ fun SubjectInfoScreen(
                 Spacer(modifier = Modifier.height(LocalDimensions.current.horizontalMedium))
 
                 Text(
-                    text = "Предмет: ${subject.name}",
+                    text = "Предмет: ",
                     style = RegularMontserrat24,
                     color = Color.Black,
                     textAlign = TextAlign.Start,
@@ -145,15 +170,16 @@ fun SubjectInfoScreen(
                                     DropdownMenuItem(
                                         text = { Text(text = option, style = RegularMontserrat16) },
                                         onClick = {
-                                            students[index] = student.copy(attendanceStatus = option)
+                                            students[index] =
+                                                student.copy(attendanceStatus = option)
                                             // Обновляем всех учеников на тот же статус
                                             students.forEachIndexed { i, s ->
                                                 students[i] = s.copy(attendanceStatus = option)
                                             }
                                             // Передаём обновлённый предмет
-                                            onEditClick(
-                                                subject.copy(attendanceStatus = option)
-                                            )
+//                                            onEditClick(
+//                                                subject.copy(attendanceStatus = option)
+//                                            )
                                             expanded = false
                                         }
                                     )
@@ -295,11 +321,6 @@ fun SubjectInfoScreen(
                 }
             )
         }
-
-        BottomTabBar(
-            selectedScreen = Screen.CALENDAR,
-            onScreenSelected = onNavigate
-        )
     }
 }
 

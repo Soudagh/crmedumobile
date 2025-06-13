@@ -11,8 +11,10 @@ data class Lesson(
     val tutor: Tutor,
     val notes: String,
     val lessonStatus: LessonStatus,
+    val color: String,
     val startTime: ZonedDateTime,
     val endTime: ZonedDateTime,
     val date: LocalDate,
-    val link: String
+    val link: String,
+    val students: List<Student>? = listOf()
 )

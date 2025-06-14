@@ -6,12 +6,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.crmedumobile.R
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val lessonName = intent.getStringExtra("lesson_name") ?: "Урок"
+        val lessonName = intent.getStringExtra("title") ?: "Урок"
+        Log.d("NotificationReceiver", "onReceive: received intent for $lessonName")
         showNotification(context, lessonName)
     }
 
@@ -25,7 +27,10 @@ class NotificationReceiver : BroadcastReceiver() {
                 channelId,
                 "Lesson Reminders",
                 NotificationManager.IMPORTANCE_DEFAULT
-            )
+            ).apply {
+                description = "Уведомления о предстоящих уроках"
+            }
+
             notificationManager.createNotificationChannel(channel)
         }
 

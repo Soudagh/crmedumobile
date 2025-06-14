@@ -6,7 +6,6 @@ import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -25,7 +24,7 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,6 +53,7 @@ import com.example.crmedumobile.presentation.theme.SubjectColors
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun NotificationsScreen(
@@ -61,46 +61,62 @@ fun NotificationsScreen(
     notificationScheduler: NotificationScheduler = NotificationScheduler(LocalContext.current)
 ) {
     val context = LocalContext.current
-    var hasNotificationPermission by remember {
-        mutableStateOf(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
-            } else true
-        )
-    }
-    var canScheduleExactAlarms by remember {
-        mutableStateOf(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                alarmManager.canScheduleExactAlarms()
-            } else true
-        )
+
+    var hasNotificationPermission by remember { mutableStateOf(false) }
+    var canScheduleExactAlarms by remember { mutableStateOf(false) }
+    var permissionRequested by remember { mutableStateOf(false) }
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        hasNotificationPermission = isGranted
     }
     var showPermissionWarning by remember { mutableStateOf(false) }
 
-    val notificationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        hasNotificationPermission = isGranted
-        showPermissionWarning = !isGranted
-        println("POST_NOTIFICATIONS permission result: $isGranted")
-    }
-
     LaunchedEffect(Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !hasNotificationPermission) {
-            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            canScheduleExactAlarms = alarmManager.canScheduleExactAlarms()
+
+            if (!canScheduleExactAlarms) {
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                    data = android.net.Uri.parse("package:${context.packageName}")
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                context.startActivity(intent)
+            }
+        } else {
+            canScheduleExactAlarms = true
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !canScheduleExactAlarms) {
-            showPermissionWarning = true
-            println("Exact alarms not allowed: canScheduleExactAlarms=$canScheduleExactAlarms")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted = ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            hasNotificationPermission = granted
+            if (!granted && !permissionRequested) {
+                permissionRequested = true
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        } else {
+            hasNotificationPermission = true
+        }
+
+        if (hasNotificationPermission && canScheduleExactAlarms) {
+            val now = kotlinx.datetime.Clock.System.now()
+            val triggerTime = now
+                .plus(10.seconds)
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+
+            notificationScheduler.scheduleNotification("test123", "Тестовое уведомление", triggerTime)
         }
     }
 
     val lessons = listOf(
         ScheduleModel(
+            id = 1,
             time = "16:10",
             name = "Математика",
             type = "Индивидуальное",
@@ -109,6 +125,7 @@ fun NotificationsScreen(
             date = "2025-05-31T16:10:00Z"
         ),
         ScheduleModel(
+            id = 2,
             time = "16:20",
             name = "Физика",
             type = "Групповое",
@@ -117,6 +134,7 @@ fun NotificationsScreen(
             date = "2025-05-31T16:20:00Z"
         ),
         ScheduleModel(
+            id = 3,
             time = "16:30",
             name = "Химия",
             type = "Индивидуальное",
@@ -126,9 +144,8 @@ fun NotificationsScreen(
         )
     )
 
-
-    if (hasNotificationPermission && canScheduleExactAlarms) {
-        LaunchedEffect(Unit) {
+    LaunchedEffect(hasNotificationPermission && canScheduleExactAlarms) {
+        if (hasNotificationPermission && canScheduleExactAlarms) {
             lessons.forEach { lesson ->
                 if (notificationPrefs.isNotificationEnabled(lesson.id.toString())) {
                     val dateTime = Instant.parse(lesson.date)
@@ -149,7 +166,6 @@ fun NotificationsScreen(
             .background(Color.White)
             .safeDrawingPadding()
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -166,14 +182,12 @@ fun NotificationsScreen(
                     .padding(bottom = LocalDimensions.current.verticalSmall)
             )
         }
-        Divider(
-            color = DarkPurple,
+
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
             thickness = 1.dp,
-            modifier = Modifier.fillMaxWidth()
+            color = DarkPurple
         )
-
-
-
 
         LazyColumn(
             modifier = Modifier
@@ -183,9 +197,11 @@ fun NotificationsScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item { Spacer(modifier = Modifier.height(LocalDimensions.current.verticalSmall)) }
+
             items(lessons) { lesson ->
+                val lessonId = lesson.id.toString()
                 var isNotificationEnabled by remember(lesson.id) {
-                    mutableStateOf(notificationPrefs.isNotificationEnabled(lesson.id.toString()))
+                    mutableStateOf(notificationPrefs.isNotificationEnabled(lessonId))
                 }
 
                 Row(
@@ -196,11 +212,7 @@ fun NotificationsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text(
-                            text = lesson.name,
-                            style = RegularMontserrat20,
-                            color = Color.Black
-                        )
+                        Text(lesson.name, style = RegularMontserrat20, color = Color.Black)
                         Text(
                             text = lesson.date.substringBefore("T")
                                 .replace("-", ".") + " ${lesson.time}",
@@ -208,6 +220,7 @@ fun NotificationsScreen(
                             color = Color.Black
                         )
                     }
+
                     Icon(
                         painter = painterResource(
                             id = if (isNotificationEnabled) R.drawable.ic_bell else R.drawable.notifications_off
@@ -217,42 +230,33 @@ fun NotificationsScreen(
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
-                                println("Clicked notification icon for lesson id=${lesson.id}, current state=$isNotificationEnabled")
                                 isNotificationEnabled = !isNotificationEnabled
                                 notificationPrefs.setNotificationEnabled(
-                                    lesson.id.toString(),
+                                    lessonId,
                                     isNotificationEnabled
                                 )
-                                println("New notification state for id=${lesson.id}: $isNotificationEnabled")
+
                                 if (hasNotificationPermission && canScheduleExactAlarms) {
+                                    val dateTime = Instant.parse(lesson.date)
+                                        .toLocalDateTime(TimeZone.currentSystemDefault())
                                     if (isNotificationEnabled) {
-                                        val dateTime = Instant.parse(lesson.date)
-                                            .toLocalDateTime(TimeZone.currentSystemDefault())
                                         notificationScheduler.scheduleNotification(
-                                            lesson.id.toString(),
+                                            lessonId,
                                             lesson.name,
                                             dateTime
                                         )
                                     } else {
-                                        notificationScheduler.cancelNotification(lesson.id.toString())
+                                        notificationScheduler.cancelNotification(lessonId)
                                     }
                                 } else {
                                     showPermissionWarning = true
-                                    println("Permissions missing: hasNotificationPermission=$hasNotificationPermission, canScheduleExactAlarms=$canScheduleExactAlarms")
                                 }
                             }
                     )
                 }
-                Divider(color = DarkPurple.copy(alpha = 0.2f), thickness = 0.5.dp)
+
+                HorizontalDivider(thickness = 0.5.dp, color = DarkPurple.copy(alpha = 0.2f))
             }
         }
     }
 }
-
-private fun openAppSettings(context: Context) {
-    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-        data = Uri.fromParts("package", context.packageName, null)
-    }
-    context.startActivity(intent)
-}
-

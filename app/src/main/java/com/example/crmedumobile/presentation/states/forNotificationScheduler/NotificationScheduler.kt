@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.AlarmManagerCompat
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toInstant
@@ -13,6 +14,7 @@ class NotificationScheduler(private val context: Context) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     fun scheduleNotification(id: String, title: String, dateTime: LocalDateTime) {
+        Log.d("notify", "notification set for ${title} at ${dateTime}")
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra("id", id)
             putExtra("title", title)

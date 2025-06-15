@@ -19,17 +19,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,8 +42,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import com.example.crmedumobile.R
+import com.example.crmedumobile.domain.model.Lesson
+import com.example.crmedumobile.domain.model.enums.AttendanceStatusEnum
+import com.example.crmedumobile.presentation.state.LessonUiState
 import com.example.crmedumobile.presentation.theme.DarkPurple
 import com.example.crmedumobile.presentation.theme.Gray
 import com.example.crmedumobile.presentation.theme.RegularMontserrat16
@@ -50,35 +56,62 @@ import com.example.crmedumobile.presentation.theme.RegularMontserrat20
 import com.example.crmedumobile.presentation.theme.RegularMontserrat24
 import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat24
 import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat32
-
-data class Student(
-    val name: String,
-    var attendanceStatus: String
-)
+import com.example.crmedumobile.presentation.viewmodel.LessonViewModel
+import java.time.format.DateTimeFormatter
 
 @Composable
-fun LessonInfoScreenTutor(
+fun LessonScreen(
     navController: NavHostController,
+    viewModel: LessonViewModel = hiltViewModel(),
+    backStackEntry: NavBackStackEntry
 ) {
-    val students = remember {
-        mutableStateListOf(
-            Student("Осыкин Данил Юрьевич", "Отсутствовал"),
-            Student("Иванова Анна Сергеевна", "subject.attendanceStatus"),
-            Student("Петров Михаил Александрович", "subject.attendanceStatus")
-        )
+    val id = backStackEntry.arguments?.getLong("id") ?: 0
+    val lessonState by viewModel.lessonState.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.loadLessonById(id)
     }
 
+    when (val state = lessonState) {
+        is LessonUiState.Success -> {
+            LessonScreenContent(
+                lesson = state.lesson,
+                onEditAttendanceStatus = { attendanceId, status ->
+                    viewModel.editAttendanceStatus(
+                        attendanceId = attendanceId,
+                        lessonId = id,
+                        attendanceStatus = status
+                    )
+                },
+                onEditLink = { viewModel.editLink(id, it) },
+                onEditNotes = { viewModel.editNotes(id, it) }
+            )
+        }
 
-//    LaunchedEffect(Unit) {
-//        onEditClick(subject)
-//    }
+        is LessonUiState.Error -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Ошибка: ${state.message}")
+            }
+        }
 
-    var meetingLink by remember { mutableStateOf("https://meet.google.com/abc-123") }
+        else -> {}
+    }
+}
+
+@Composable
+fun LessonScreenContent(
+    lesson: Lesson,
+    onEditAttendanceStatus: (Long, AttendanceStatusEnum) -> Unit,
+    onEditLink: (String) -> Unit,
+    onEditNotes: (String) -> Unit
+) {
+
+    val attendances = lesson.attendances
     var showLinkDialog by remember { mutableStateOf(false) }
-    var tempLink by remember { mutableStateOf(meetingLink) }
+    var tempLink by remember { mutableStateOf(lesson.link ?: "") }
     var showQrCode by remember { mutableStateOf(false) }
-    var comments by remember { mutableStateOf("") }
-    val attendanceOptions = listOf("Присутствовал", "Отсутствовал", "Уваж. причина")
+    var comments by remember { mutableStateOf(lesson.notes ?: "") }
+    val attendanceOptions = AttendanceStatusEnum.entries.map(AttendanceStatusEnum::displayName)
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
 
     Column(
         modifier = Modifier
@@ -102,10 +135,10 @@ fun LessonInfoScreenTutor(
                     .padding(bottom = LocalDimensions.current.verticalSmall)
             )
         }
-        Divider(
-            color = DarkPurple,
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
             thickness = 1.dp,
-            modifier = Modifier.fillMaxWidth()
+            color = DarkPurple
         )
 
         LazyColumn(
@@ -119,7 +152,7 @@ fun LessonInfoScreenTutor(
                 Spacer(modifier = Modifier.height(LocalDimensions.current.horizontalMedium))
 
                 Text(
-                    text = "Предмет: ",
+                    text = "Предмет: ${lesson.subject.name}",
                     style = RegularMontserrat24,
                     color = Color.Black,
                     textAlign = TextAlign.Start,
@@ -135,7 +168,7 @@ fun LessonInfoScreenTutor(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                students.forEachIndexed { index, student ->
+                attendances.forEachIndexed { index, attendance ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -143,8 +176,9 @@ fun LessonInfoScreenTutor(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        val student = attendance.student.user
                         Text(
-                            text = student.name,
+                            text = "${student.surname} ${student.name} ${student.patronymic}",
                             style = RegularMontserrat16,
                             color = Color.Black,
                             modifier = Modifier.weight(1f)
@@ -152,7 +186,7 @@ fun LessonInfoScreenTutor(
                         var expanded by remember { mutableStateOf(false) }
                         Box {
                             Text(
-                                text = student.attendanceStatus,
+                                text = attendance.attendanceStatus.displayName(),
                                 style = RegularMontserrat16,
                                 color = Color.White,
                                 modifier = Modifier
@@ -170,16 +204,10 @@ fun LessonInfoScreenTutor(
                                     DropdownMenuItem(
                                         text = { Text(text = option, style = RegularMontserrat16) },
                                         onClick = {
-                                            students[index] =
-                                                student.copy(attendanceStatus = option)
-                                            // Обновляем всех учеников на тот же статус
-                                            students.forEachIndexed { i, s ->
-                                                students[i] = s.copy(attendanceStatus = option)
-                                            }
-                                            // Передаём обновлённый предмет
-//                                            onEditClick(
-//                                                subject.copy(attendanceStatus = option)
-//                                            )
+                                            onEditAttendanceStatus(
+                                                attendance.id,
+                                                getEnumByDisplayName(option)
+                                            )
                                             expanded = false
                                         }
                                     )
@@ -197,7 +225,7 @@ fun LessonInfoScreenTutor(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Ссылка на занятие: $meetingLink",
+                        text = "Ссылка на занятие: ${lesson.link ?: "Отсутствует"}",
                         style = RegularMontserrat16,
                         color = Color.Black,
                         maxLines = 2,
@@ -216,9 +244,10 @@ fun LessonInfoScreenTutor(
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Text(
-                    text = "Время занятия: 18:00–19:00",
+                    text = "Время занятия: ${
+                        lesson.startTime.toLocalTime().format(formatter)
+                    }–${lesson.endTime.toLocalTime().format(formatter)}",
                     style = RegularMontserrat20,
                     color = Color.Black,
                     textAlign = TextAlign.Start,
@@ -281,6 +310,18 @@ fun LessonInfoScreenTutor(
                     ),
                     textStyle = RegularMontserrat16
                 )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                TextButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = { onEditNotes(comments) }
+                ) {
+                    Text(
+                        text = "Сохранить комментарий",
+                        style = RegularMontserrat16,
+                        color = DarkPurple
+                    )
+                }
             }
         }
 
@@ -305,7 +346,7 @@ fun LessonInfoScreenTutor(
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            meetingLink = tempLink
+                            onEditLink(tempLink)
                             showLinkDialog = false
                         }
                     ) {
@@ -324,3 +365,11 @@ fun LessonInfoScreenTutor(
     }
 }
 
+fun AttendanceStatusEnum.displayName(): String = when (this) {
+    AttendanceStatusEnum.PRESENCE -> "Присутствовал"
+    AttendanceStatusEnum.NOT_PRESENCE -> "Отсутствовал"
+    AttendanceStatusEnum.REASON -> "Уважительная причина"
+}
+
+fun getEnumByDisplayName(name: String): AttendanceStatusEnum =
+    AttendanceStatusEnum.entries.find { it.displayName() == name }!!

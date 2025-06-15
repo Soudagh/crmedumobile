@@ -8,7 +8,7 @@ fun UserResponse.toDomain(): User = User(
     surname,
     name,
     patronymic,
-    mail = email,
+    email = email,
     phone,
     timezone,
     role,

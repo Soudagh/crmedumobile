@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,6 +44,10 @@ import com.example.crmedumobile.presentation.theme.RegularMontserrat24
 import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat32
 import com.example.crmedumobile.presentation.viewmodel.ScheduleViewModel
 import java.time.LocalDate
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun ScheduleScreenTutor(
@@ -52,22 +55,17 @@ fun ScheduleScreenTutor(
     viewModel: ScheduleViewModel = hiltViewModel()
 ) {
     var lessons by remember { mutableStateOf(listOf<ScheduleModel>()) }
-    var today by remember { mutableStateOf(Pair("", "")) }
-    var selectedDay by remember { mutableIntStateOf(0) }
-
     val scheduleState by viewModel.scheduleState.collectAsState()
-
-    val daysOfWeek = listOf(
-        "Понедельник" to "05.05.2025",
-        "Вторник" to "06.05.2025",
-        "Среда" to "07.05.2025",
-        "Четверг" to "08.05.2025",
-        "Пятница" to "09.05.2025",
-        "Суббота" to "10.05.2025",
-        "Воскресенье" to "11.05.2025"
-    )
-
+    var currentDate by remember { mutableStateOf(LocalDate.now()) }
+    val visibleDays = (-3L..3L).map { offset ->
+        val date = currentDate.plusDays(offset)
+        val dayOfWeek = date.dayOfWeek.getDisplayName(TextStyle.FULL, Locale("ru"))
+        val formatted = date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+        dayOfWeek.replaceFirstChar(Char::titlecase) to formatted
+    }
+    val selectedDayIndex = 3
     LaunchedEffect(Unit) {
+        currentDate = LocalDate.now()
         viewModel.loadSchedule(mode = "TUTOR")
     }
 
@@ -75,11 +73,6 @@ fun ScheduleScreenTutor(
         when (val state = scheduleState) {
             is ScheduleUiState.Success -> {
                 lessons = state.schedule
-                val now = LocalDate.now()
-                today = Pair(
-                    now.dayOfWeek.name.lowercase().replaceFirstChar(Char::titlecase),
-                    now.toString()
-                )
             }
 
             is ScheduleUiState.Error -> {
@@ -90,12 +83,18 @@ fun ScheduleScreenTutor(
         }
     }
 
+    val lessonsForSelectedDay = lessons.filter {
+        runCatching {
+            val lessonDate = ZonedDateTime.parse(it.date).toLocalDate()
+            lessonDate == currentDate
+        }.getOrDefault(false)
+    }
+
     ScheduleScreenTutorContent(
-        lessons = lessons,
-        today = today,
-        daysOfWeek = daysOfWeek,
-        selectedDay = selectedDay,
-        onDayChange = { selectedDay = it },
+        lessons = lessonsForSelectedDay,
+        daysOfWeek = visibleDays,
+        selectedDay = selectedDayIndex,
+        onDayChange = { offset -> currentDate = currentDate.plusDays(offset.toLong()) },
         lessonInfoClick = { navController.navigate("lesson/${it}") }
     )
 }
@@ -104,12 +103,12 @@ fun ScheduleScreenTutor(
 fun ScheduleScreenTutorContent(
     modifier: Modifier = Modifier,
     lessons: List<ScheduleModel>,
-    today: Pair<String, String>,
     daysOfWeek: List<Pair<String, String>>,
     selectedDay: Int,
     onDayChange: (Int) -> Unit,
     lessonInfoClick: (Long) -> Unit,
 ) {
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -160,7 +159,7 @@ fun ScheduleScreenTutorContent(
                         modifier = Modifier
                             .size(32.dp)
                             .clickable {
-                                if (selectedDay > 0) onDayChange(selectedDay - 1)
+                                onDayChange(-1)
                             }
                     )
 
@@ -186,7 +185,7 @@ fun ScheduleScreenTutorContent(
                         modifier = Modifier
                             .size(32.dp)
                             .clickable {
-                                if (selectedDay < daysOfWeek.size - 1) onDayChange(selectedDay + 1)
+                                onDayChange(+1)
                             }
                     )
                 }
@@ -207,7 +206,7 @@ fun ScheduleScreenTutorContent(
                 items(lessons) { lesson ->
                     ScheduleTutorItem(
                         item = lesson,
-                        lessonInfoClick = { lessonInfoClick(lesson.id!!) },
+                        lessonInfoClick = { lessonInfoClick(lesson.id) },
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -221,47 +220,46 @@ fun ScheduleScreenTutorContent(
 @Preview(showBackground = true)
 @Composable
 fun ScheduleScreenTutorContentPreview() {
-    val dummyLessons = listOf(
-        ScheduleModel(
-            id = 1,
-            time = "09:00 – 10:30",
-            name = "Физика",
-            type = "Групповое",
-            participant = "Группа С",
-            teacher = "Кузнецов В.В.",
-            color = "#FF8A65",
-            date = "05.05.2025T09:00:00",
-            attendanceStatus = "Присутствовал",
-        ),
-        ScheduleModel(
-            id = 2,
-            time = "11:00 – 12:30",
-            name = "Информатика",
-            type = "Индивидуальное",
-            participant = "Сидорова М.М.",
-            teacher = "Кузнецов В.В.",
-            color = "#4DB6AC",
-            date = "05.05.2025T11:00:00",
-            attendanceStatus = "Отсутствовал",
-        )
-    )
-
-    val daysOfWeek = listOf(
-        "Понедельник" to "05.05.2025",
-        "Вторник" to "06.05.2025",
-        "Среда" to "07.05.2025",
-        "Четверг" to "08.05.2025",
-        "Пятница" to "09.05.2025",
-        "Суббота" to "10.05.2025",
-        "Воскресенье" to "11.05.2025"
-    )
-
-    ScheduleScreenTutorContent(
-        lessons = dummyLessons,
-        today = daysOfWeek[0],
-        selectedDay = 0,
-        onDayChange = {},
-        daysOfWeek = daysOfWeek,
-        lessonInfoClick = {}
-    )
+//    val dummyLessons = listOf(
+//        ScheduleModel(
+//            id = 1,
+//            time = "09:00 – 10:30",
+//            name = "Физика",
+//            type = "Групповое",
+//            participant = "Группа С",
+//            teacher = "Кузнецов В.В.",
+//            color = "#FF8A65",
+//            date = "05.05.2025T09:00:00",
+//            attendanceStatus = "Присутствовал",
+//        ),
+//        ScheduleModel(
+//            id = 2,
+//            time = "11:00 – 12:30",
+//            name = "Информатика",
+//            type = "Индивидуальное",
+//            participant = "Сидорова М.М.",
+//            teacher = "Кузнецов В.В.",
+//            color = "#4DB6AC",
+//            date = "05.05.2025T11:00:00",
+//            attendanceStatus = "Отсутствовал",
+//        )
+//    )
+//
+//    val daysOfWeek = listOf(
+//        "Понедельник" to "05.05.2025",
+//        "Вторник" to "06.05.2025",
+//        "Среда" to "07.05.2025",
+//        "Четверг" to "08.05.2025",
+//        "Пятница" to "09.05.2025",
+//        "Суббота" to "10.05.2025",
+//        "Воскресенье" to "11.05.2025"
+//    )
+//
+//    ScheduleScreenTutorContent(
+//        lessons = dummyLessons,
+//        selectedDay = 0,
+//        onDayChange = {},
+//        daysOfWeek = daysOfWeek,
+//        lessonInfoClick = {}
+//    )
 }

@@ -8,7 +8,7 @@ import androidx.navigation.navArgument
 import com.example.crmedumobile.presentation.screen.CheckHomeworkScreen
 import com.example.crmedumobile.presentation.screen.ElementsScreen
 import com.example.crmedumobile.presentation.screen.HomeWorkScreenTutor
-import com.example.crmedumobile.presentation.screen.LessonInfoScreenTutor
+import com.example.crmedumobile.presentation.screen.LessonScreen
 import com.example.crmedumobile.presentation.screen.NotificationsScreen
 import com.example.crmedumobile.presentation.screen.ProfileScreen
 import com.example.crmedumobile.presentation.screen.ScheduleScreenTutor
@@ -58,9 +58,9 @@ fun NavGraphBuilder.tutorNavGraph(navController: NavHostController) {
 
     composable(
         "lesson/{id}",
-        arguments = listOf(navArgument("id") { type = NavType.IntType })
+        arguments = listOf(navArgument("id") { type = NavType.LongType })
     ) {
-        LessonInfoScreenTutor(navController = navController)
+        LessonScreen(navController = navController, backStackEntry = it)
     }
 }
 

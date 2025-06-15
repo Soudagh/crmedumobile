@@ -41,7 +41,12 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val decodedJWT = JWT.decode(token)
             val expiresAt = decodedJWT.expiresAt
-            expiresAt != null && expiresAt.after(java.util.Date())
+            if (expiresAt != null && expiresAt.after(java.util.Date())) {
+                true
+            } else {
+                logout()
+                false
+            }
         } catch (e: Exception) {
             logout()
             false

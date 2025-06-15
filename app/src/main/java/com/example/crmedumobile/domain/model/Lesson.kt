@@ -9,12 +9,12 @@ data class Lesson(
     val subject: Subject,
     val program: Program,
     val tutor: Tutor,
-    val notes: String,
+    val notes: String?,
     val lessonStatus: LessonStatus,
     val color: String,
     val startTime: ZonedDateTime,
     val endTime: ZonedDateTime,
     val date: LocalDate,
-    val link: String,
-    val students: List<Student>? = listOf()
+    val link: String?,
+    val attendances: List<AttendanceStatus> = listOf()
 )

@@ -3,7 +3,6 @@ package com.example.crmedumobile.presentation.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -53,19 +52,19 @@ fun ScheduleTutorItem(
         animationSpec = tween(durationMillis = 300)
     )
 
-    val borderColor = when (item.attendanceStatus) {
-        "Отсутствовал" -> Color.Red
-        "Присутствовал" -> Color.Green
-        "Уваж. причина" -> Color.Blue
-        else -> Color.Transparent
-    }
+//    val borderColor = when (item.attendanceStatus) {
+//        "Отсутствовал" -> Color.Red
+//        "Присутствовал" -> Color.Green
+//        "Уваж. причина" -> Color.Blue
+//        else -> Color.Transparent
+//    }
 
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
-            .border(2.dp, borderColor, RoundedCornerShape(18.dp))
-            .background(Color(item.color!!.toColorInt()))
+//            .border(2.dp, borderColor, RoundedCornerShape(18.dp))
+            .background(Color(item.color.toColorInt()))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -84,7 +83,7 @@ fun ScheduleTutorItem(
                 color = Color.Black
             )
             Text(
-                text = item.participant.toString(),
+                text = item.participant,
                 style = BoldMontserrat16,
                 color = Color.Black
             )
@@ -100,7 +99,7 @@ fun ScheduleTutorItem(
                 .rotate(rotation)
                 .clickable {
                     isAnimating = true
-                    lessonInfoClick(item.id!!)
+                    lessonInfoClick(item.id)
                 }
         )
     }
@@ -109,16 +108,17 @@ fun ScheduleTutorItem(
 @Preview(showBackground = true)
 @Composable
 fun ScheduleItemTutorPreview() {
-    ScheduleTutorItem(
-        item = ScheduleModel(
-            time = "10:00",
-            name = "Математика",
-            type = "Индивидуальное",
-            participant = "Иванов",
-            color = "0xFFBBDEFB",
-            date = "2025-05-05T10:00:00Z",
-            attendanceStatus = "Присутствовал"
-        ),
-        lessonInfoClick = {}
-    )
+//    ScheduleTutorItem(
+//        item = ScheduleModel(
+//            id = 1L,
+//            time = "10:00",
+//            name = "Математика",
+//            type = "Индивидуальное",
+//            participant = "Иванов",
+//            color = "0xFFBBDEFB",
+//            date = "2025-05-05T10:00:00Z",
+////            attendanceStatus = "Присутствовал"
+//        ),
+//        lessonInfoClick = {}
+//    )
 }

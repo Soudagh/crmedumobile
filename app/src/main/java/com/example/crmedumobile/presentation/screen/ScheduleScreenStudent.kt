@@ -126,27 +126,27 @@ fun ScheduleScreenStudentContent(
 @Preview(showBackground = true)
 @Composable
 fun ScheduleScreenStudentPreview() {
-    val dummyLessons = listOf(
-        ScheduleModel(
-            time = "10:00 – 11:30",
-            name = "Math",
-            participant = "Group A",
-            teacher = "Mr. Smith",
-            link = "https://zoom.us/lesson/123",
-            date = ""
-        ),
-        ScheduleModel(
-            time = "12:00 – 13:30",
-            name = "History",
-            participant = "Group B",
-            teacher = "Ms. Johnson",
-            link = "https://zoom.us/lesson/456",
-            date = ""
-        )
-    )
-
-    ScheduleScreenStudentContent(
-        lessons = dummyLessons,
-        today = Pair("Monday", "2025-05-26")
-    )
+//    val dummyLessons = listOf(
+//        ScheduleModel(
+//            time = "10:00 – 11:30",
+//            name = "Math",
+//            participant = "Group A",
+//            teacher = "Mr. Smith",
+//            link = "https://zoom.us/lesson/123",
+//            date = ""
+//        ),
+//        ScheduleModel(
+//            time = "12:00 – 13:30",
+//            name = "History",
+//            participant = "Group B",
+//            teacher = "Ms. Johnson",
+//            link = "https://zoom.us/lesson/456",
+//            date = ""
+//        )
+//    )
+//
+//    ScheduleScreenStudentContent(
+//        lessons = dummyLessons,
+//        today = Pair("Monday", "2025-05-26")
+//    )
 }

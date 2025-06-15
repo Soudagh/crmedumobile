@@ -2,7 +2,9 @@ package com.example.crmedumobile.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.crmedumobile.data.network.service.AttendanceService
 import com.example.crmedumobile.data.network.service.AuthService
+import com.example.crmedumobile.data.network.service.LessonService
 import com.example.crmedumobile.data.network.service.NotificationService
 import com.example.crmedumobile.data.network.service.ScheduleService
 import com.example.crmedumobile.data.network.service.UserService
@@ -79,6 +81,14 @@ object NetworkModule {
     @Provides
     fun provideNotificationService(retrofit: Retrofit): NotificationService =
         retrofit.create(NotificationService::class.java)
+
+    @Provides
+    fun provideLessonService(retrofit: Retrofit): LessonService =
+        retrofit.create(LessonService::class.java)
+
+    @Provides
+    fun provideAttendanceService(retrofit: Retrofit): AttendanceService =
+        retrofit.create(AttendanceService::class.java)
 }
 
 class ZonedDateTimeAdapter {

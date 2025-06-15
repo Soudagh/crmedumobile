@@ -25,6 +25,7 @@ class SplashViewModel @Inject constructor(
     fun recalculateStartDestination() {
         viewModelScope.launch {
             val isLoggedIn = authRepository.isLoggedIn()
+            println(isLoggedIn)
             val role = authRepository.getRole()
 
             _startDestination.value = when {

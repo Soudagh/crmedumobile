@@ -1,5 +1,6 @@
 [versions]
 agp = "8.9.3"
+core = "3.5.2"
 javaJwt = "4.4.0"
 kotlin = "2.1.0"
 coreKtx = "1.16.0"
@@ -44,9 +45,11 @@ protobuf = "3.21.12"
 protobufPlugin = "0.9.4"
 retrofitKotlinxSerializationJson = "0.8.0"
 room = "2.7.1"
+zxingAndroidEmbedded = "4.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+core = { module = "com.google.zxing:core", version.ref = "core" }
 java-jwt = { module = "com.auth0:java-jwt", version.ref = "javaJwt" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -107,6 +110,7 @@ navigation-compose = { module = "androidx.navigation:navigation-compose", versio
 
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

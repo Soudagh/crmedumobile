@@ -7,6 +7,7 @@ import com.example.crmedumobile.domain.repository.notification.NotificationRepos
 import com.example.crmedumobile.domain.repository.schedule.ScheduleRepository
 import com.example.crmedumobile.domain.repository.user.UserRepository
 import com.example.crmedumobile.domain.usecase.ChangeNotifyModeUseCase
+import com.example.crmedumobile.domain.usecase.CreateLessonQrUseCase
 import com.example.crmedumobile.domain.usecase.GetLessonUseCase
 import com.example.crmedumobile.domain.usecase.GetNotificationsUseCase
 import com.example.crmedumobile.domain.usecase.GetProfileUseCase
@@ -14,6 +15,7 @@ import com.example.crmedumobile.domain.usecase.GetScheduleUseCase
 import com.example.crmedumobile.domain.usecase.GetUserRoleUseCase
 import com.example.crmedumobile.domain.usecase.LogOutUseCase
 import com.example.crmedumobile.domain.usecase.LoginUseCase
+import com.example.crmedumobile.domain.usecase.MarkAttendanceByQr
 import com.example.crmedumobile.domain.usecase.SetAttendanceUseCase
 import com.example.crmedumobile.domain.usecase.SetLinkUseCase
 import com.example.crmedumobile.domain.usecase.SetNotesUseCase
@@ -69,4 +71,10 @@ object UseCaseModule {
 
     @Provides
     fun setNotesUseCase(lessonRepository: LessonRepository): SetNotesUseCase = SetNotesUseCase(lessonRepository)
+
+    @Provides
+    fun createLessonQrUseCase(lessonRepository: LessonRepository): CreateLessonQrUseCase = CreateLessonQrUseCase(lessonRepository)
+
+    @Provides
+    fun markAttendanceByQrUseCase(attendanceRepository: AttendanceRepository): MarkAttendanceByQr = MarkAttendanceByQr(attendanceRepository)
 }

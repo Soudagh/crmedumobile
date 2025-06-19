@@ -26,12 +26,16 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             val isLoggedIn = authRepository.isLoggedIn()
             println(isLoggedIn)
+            if (!isLoggedIn) {
+                println("aboba")
+                _startDestination.value = "login"
+                return@launch
+            }
             val role = authRepository.getRole()
 
-            _startDestination.value = when {
-                !isLoggedIn -> "login"
-                role == UserRole.TUTOR.name -> "tutor_nav"
-                role == UserRole.STUDENT.name -> "student_nav"
+            _startDestination.value = when (role) {
+                UserRole.TUTOR.name -> "tutor_nav"
+                UserRole.STUDENT.name -> "student_nav"
                 else -> "login"
             }
         }

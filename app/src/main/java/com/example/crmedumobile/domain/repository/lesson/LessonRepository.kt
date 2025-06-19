@@ -1,6 +1,7 @@
 package com.example.crmedumobile.domain.repository.lesson
 
 import com.example.crmedumobile.domain.model.Lesson
+import com.example.crmedumobile.domain.model.LessonQr
 
 interface LessonRepository {
 
@@ -9,4 +10,6 @@ interface LessonRepository {
     suspend fun setLessonLinkById(id: Long, link: String)
 
     suspend fun setLessonNotesById(id: Long, notes: String)
+
+    suspend fun createLessonQr(id: Long): LessonQr
 }

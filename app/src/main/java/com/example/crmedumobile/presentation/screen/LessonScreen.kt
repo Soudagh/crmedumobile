@@ -1,6 +1,7 @@
 package com.example.crmedumobile.presentation.screen
 
 import LocalDimensions
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,6 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,6 +52,7 @@ import com.example.crmedumobile.R
 import com.example.crmedumobile.domain.model.Lesson
 import com.example.crmedumobile.domain.model.enums.AttendanceStatusEnum
 import com.example.crmedumobile.presentation.state.LessonUiState
+import com.example.crmedumobile.presentation.theme.Black
 import com.example.crmedumobile.presentation.theme.DarkPurple
 import com.example.crmedumobile.presentation.theme.Gray
 import com.example.crmedumobile.presentation.theme.RegularMontserrat16
@@ -56,8 +60,14 @@ import com.example.crmedumobile.presentation.theme.RegularMontserrat20
 import com.example.crmedumobile.presentation.theme.RegularMontserrat24
 import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat24
 import com.example.crmedumobile.presentation.theme.SemiBoldMontserrat32
+import com.example.crmedumobile.presentation.theme.White
 import com.example.crmedumobile.presentation.viewmodel.LessonViewModel
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.qrcode.QRCodeWriter
 import java.time.format.DateTimeFormatter
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.set
+import com.example.crmedumobile.domain.model.LessonQr
 
 @Composable
 fun LessonScreen(
@@ -83,7 +93,9 @@ fun LessonScreen(
                     )
                 },
                 onEditLink = { viewModel.editLink(id, it) },
-                onEditNotes = { viewModel.editNotes(id, it) }
+                onEditNotes = { viewModel.editNotes(id, it) },
+                onCreateQrCode = { viewModel.createQrCode(it) },
+                qrState = viewModel.qrCodeState.collectAsState().value
             )
         }
 
@@ -102,7 +114,9 @@ fun LessonScreenContent(
     lesson: Lesson,
     onEditAttendanceStatus: (Long, AttendanceStatusEnum) -> Unit,
     onEditLink: (String) -> Unit,
-    onEditNotes: (String) -> Unit
+    onEditNotes: (String) -> Unit,
+    onCreateQrCode: (Long) -> Unit,
+    qrState: LessonQr?
 ) {
 
     val attendances = lesson.attendances
@@ -262,17 +276,35 @@ fun LessonScreenContent(
                     textAlign = TextAlign.Left,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { showQrCode = !showQrCode }
+                        .clickable {
+                            showQrCode = !showQrCode
+                            if (showQrCode) onCreateQrCode(lesson.id)
+                        }
                 )
                 if (showQrCode) {
-                    Image(
-                        painter = painterResource(id = R.drawable.qr),
-                        contentDescription = "QR Code",
-                        modifier = Modifier
-                            .size(120.dp)
-                            .align(Alignment.Start)
+                    qrState?.qrPayload?.let { qrPayload ->
+                        val bitmap = remember(qrPayload) { generateQRCode(qrPayload, 512) }
+
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = "QR Code",
+                            modifier = Modifier
+                                .size(200.dp)
+                                .align(Alignment.Start)
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "QR действует до: ${qrState.expiresAt}",
+                            style = RegularMontserrat16,
+                            color = Color.DarkGray
+                        )
+                    } ?: Text(
+                        text = "Не удалось сгенерировать QR",
+                        color = Color.Red,
+                        style = RegularMontserrat16
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -373,3 +405,17 @@ fun AttendanceStatusEnum.displayName(): String = when (this) {
 
 fun getEnumByDisplayName(name: String): AttendanceStatusEnum =
     AttendanceStatusEnum.entries.find { it.displayName() == name }!!
+
+fun generateQRCode(text: String, size: Int = 512): Bitmap {
+    val writer = QRCodeWriter()
+    val bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, size, size)
+    val bmp = createBitmap(size, size, Bitmap.Config.RGB_565)
+
+    for (x in 0 until size) {
+        for (y in 0 until size) {
+            bmp[x, y] = if (bitMatrix[x, y]) Color.Black.toArgb() else Color.White.toArgb()
+        }
+    }
+
+    return bmp
+}

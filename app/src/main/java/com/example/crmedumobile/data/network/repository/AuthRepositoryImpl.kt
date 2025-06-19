@@ -1,6 +1,7 @@
 package com.example.crmedumobile.data.network.repository
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
 import com.auth0.jwt.JWT
 import com.auth0.jwt.interfaces.DecodedJWT
@@ -14,6 +15,7 @@ import com.example.crmedumobile.domain.model.enums.UserRole
 import com.example.crmedumobile.domain.model.error.AuthException
 import com.example.crmedumobile.domain.repository.auth.AuthRepository
 import retrofit2.HttpException
+import java.util.Date
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -41,7 +43,8 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val decodedJWT = JWT.decode(token)
             val expiresAt = decodedJWT.expiresAt
-            if (expiresAt != null && expiresAt.after(java.util.Date())) {
+            Log.d("Auth", "Token expires at: $expiresAt, now: ${Date()}")
+            if (expiresAt != null && expiresAt.after(Date())) {
                 true
             } else {
                 logout()
@@ -61,6 +64,7 @@ class AuthRepositoryImpl @Inject constructor(
         sharedPreferences.edit {
             remove("jwt_token")
             remove("user_role")
+            apply()
         }
     }
 

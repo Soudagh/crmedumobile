@@ -2,7 +2,9 @@ package com.example.crmedumobile.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.crmedumobile.domain.model.LessonQr
 import com.example.crmedumobile.domain.model.enums.AttendanceStatusEnum
+import com.example.crmedumobile.domain.usecase.CreateLessonQrUseCase
 import com.example.crmedumobile.domain.usecase.GetLessonUseCase
 import com.example.crmedumobile.domain.usecase.SetAttendanceUseCase
 import com.example.crmedumobile.domain.usecase.SetLinkUseCase
@@ -20,10 +22,14 @@ class LessonViewModel @Inject constructor(
     private val setAttendanceUseCase: SetAttendanceUseCase,
     private val setLinkUseCase: SetLinkUseCase,
     private val setNotesUseCase: SetNotesUseCase,
+    private val createLessonQrUseCase: CreateLessonQrUseCase
 ) : ViewModel() {
 
     private val _lessonState = MutableStateFlow<LessonUiState>(LessonUiState.Idle)
     val lessonState: StateFlow<LessonUiState> = _lessonState
+    private val _qrCodeState = MutableStateFlow<LessonQr?>(null)
+    val qrCodeState: StateFlow<LessonQr?> = _qrCodeState
+
 
     fun loadLessonById(id: Long) {
         viewModelScope.launch {
@@ -70,6 +76,18 @@ class LessonViewModel @Inject constructor(
             } catch (e: Exception) {
                 _lessonState.value = LessonUiState.Error(e.message ?: "Ошибка изменения комментария")
             }
+        }
+    }
+
+    fun createQrCode(id: Long) {
+        viewModelScope.launch {
+            try {
+                val qr = createLessonQrUseCase(id)
+                _qrCodeState.value = qr
+            } catch (e: Exception) {
+                _qrCodeState.value = null
+            }
+
         }
     }
 }

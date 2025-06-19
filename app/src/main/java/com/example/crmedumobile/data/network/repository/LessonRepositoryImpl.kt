@@ -6,6 +6,7 @@ import com.example.crmedumobile.data.network.mapper.schedule.toDomain
 import com.example.crmedumobile.data.network.service.LessonService
 import com.example.crmedumobile.data.network.util.ErrorParser
 import com.example.crmedumobile.domain.model.Lesson
+import com.example.crmedumobile.domain.model.LessonQr
 import com.example.crmedumobile.domain.repository.lesson.LessonRepository
 import javax.inject.Inject
 
@@ -23,5 +24,9 @@ class LessonRepositoryImpl @Inject constructor(
 
     override suspend fun setLessonNotesById(id: Long, notes: String) {
         lessonService.setLessonNotes(id, PatchLessonNotesRequest(notes))
+    }
+
+    override suspend fun createLessonQr(id: Long): LessonQr {
+        return lessonService.createLessonQr(id).toDomain()
     }
 }

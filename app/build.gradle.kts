@@ -79,4 +79,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.material.icons.extended)
     implementation(libs.java.jwt)
+    implementation(libs.core)
+    implementation(libs.zxing.android.embedded)
 }
